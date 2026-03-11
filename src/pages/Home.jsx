@@ -9,6 +9,7 @@ import PropertyRow from "../components/property/PropertyRow";
 import SearchBar from "../components/search/SearchBar";
 import Filters from "../components/search/Filters";
 import PropertyCarousel from "../components/property/PropertyCarousel";
+import AgentCarousel from "../components/agents/AgentCarousel";
 
 function Home() {
 
@@ -22,6 +23,66 @@ function Home() {
     const handleSearch = (query) => {
         setSearchQuery(query.toLowerCase());
     };
+
+    const topAgents = [
+        {
+            id: 1,
+            name: "Rajesh Wankhede",
+            location: "Moharli",
+            listings: 12,
+            avatar: "https://i.pravatar.cc/100?img=3",
+        },
+        {
+            id: 2,
+            name: "Prakash Chavan",
+            location: "Kolara",
+            listings: 8,
+            avatar: "https://i.pravatar.cc/100?img=5",
+        },
+        {
+            id: 3,
+            name: "Mahesh Bansod",
+            location: "Adegaon",
+            listings: 15,
+            avatar: "https://i.pravatar.cc/100?img=7",
+        },
+        {
+            id: 4,
+            name: "Nitin Bhoyar",
+            location: "Chimur",
+            listings: 6,
+            avatar: "https://i.pravatar.cc/100?img=8",
+        },
+
+        {
+            id: 5,
+            name: "Rajesh Tevar",
+            location: "Adegaon",
+            listings: 15,
+            avatar: "https://i.pravatar.cc/100?img=7",
+        },
+        {
+            id: 6,
+            name: "Ramesh Kale",
+            location: "Chimur",
+            listings: 6,
+            avatar: "https://i.pravatar.cc/100?img=8",
+        },
+        {
+            id: 7,
+            name: "Sagar Mundada",
+            location: "Adegaon",
+            listings: 15,
+            avatar: "https://i.pravatar.cc/100?img=7",
+        },
+        {
+            id: 8,
+            name: "Kishr Desai",
+            location: "Chimur",
+            listings: 6,
+            avatar: "https://i.pravatar.cc/100?img=8",
+        },
+    ];
 
     const properties = [
         {
@@ -204,11 +265,11 @@ function Home() {
                     properties={properties}
                 />
             </div>
-            <div className="max-w-7xl mx-auto px-4 pt-24 pb-6">
+            <div className="max-w-7xl mx-auto px-4 pt-10 pb-6">
 
-                {/* <SearchBar onSearch={handleSearch} /> */}
 
-                <Filters filters={filters} onChange={setFilters} />
+
+                {/* <Filters filters={filters} onChange={setFilters} /> */}
 
                 {/* Discovery Sections */}
                 {searchQuery === "" ? (
@@ -218,15 +279,27 @@ function Home() {
                             properties={ownerListings}
                         />
 
+                        <AgentCarousel
+                            title="Top Land Partners Around Tadoba"
+                            agents={topAgents}
+                        />
                         <PropertyRow
                             title="Listed by Agents"
                             properties={agentListings}
                         />
                     </>
                 ) : (
-                    <div className="mt-6">
-                        <PropertyGrid properties={filteredProperties} />
-                    </div>
+                    <>
+
+                        <div className="mt-6">
+                            <PropertyGrid properties={filteredProperties} />
+                        </div>
+                        <AgentCarousel
+                            title="Top Land Partners Around Tadoba"
+                            agents={topAgents}
+                        />
+                    </>
+
                 )}
 
             </div>

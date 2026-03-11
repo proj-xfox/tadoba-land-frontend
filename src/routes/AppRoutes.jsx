@@ -7,6 +7,7 @@ import Signup from "../pages/Signup";
 import AddProperty from "../pages/AddProperty";
 import PropertyDetails from "../pages/PropertyDetails";
 import MyProperties from "../pages/MyProperties";
+import AgentProfile from "../pages/AgentProfile";
 
 function AppRoutes() {
     return (
@@ -24,6 +25,9 @@ function AppRoutes() {
                 <Route path="/my-properties" element={<MyProperties />} />
 
                 <Route path="/property/:id" element={<PropertyDetails />} />
+
+                {/* Agent profile page */}
+                <Route path="/agent/:slug" element={<AgentProfile />} />
 
             </Routes>
         </BrowserRouter>

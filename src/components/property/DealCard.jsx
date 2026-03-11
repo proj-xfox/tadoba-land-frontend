@@ -23,8 +23,10 @@ function DealCard({ property }) {
                     <span className="text-green-700 font-semibold text-sm">
                         {property.price}
                     </span>
-
-                    <span className="text-xs bg-gray-100 px-2 py-1 rounded">
+                    <span className="text-xs font-semibold bg-red-100 px-2 py-1 rounded">
+                        {property.type}
+                    </span>
+                    <span className="text-xs font-semibold bg-gray-100 px-2 py-1 rounded">
                         {property.area}
                     </span>
 

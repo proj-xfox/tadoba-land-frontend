@@ -22,8 +22,14 @@ function PropertyCard({ property }) {
                 </p>
 
                 <div className="flex justify-between text-sm text-gray-700 mt-2">
-                    <span>{property.area}</span>
-                    <span>{property.type}</span>
+                    <span className="text-xs font-semibold bg-gray-100 px-2 py-1 rounded">
+                        {property.area}
+                    </span>
+
+                    <span className="text-xs font-semibold bg-red-100 px-2 py-1 rounded">
+                        {property.type}
+                    </span>
+                    {/*  <span>{property.type}</span> */}
                 </div>
 
                 <p className="text-green-700 font-bold mt-2">
@@ -32,7 +38,7 @@ function PropertyCard({ property }) {
 
                 <Link
                     to={`/property/${property.id}`}
-                    className="block mt-3 text-center bg-green-700 text-white py-2 rounded hover:bg-green-800"
+                    className="block mt-3 text-center text-green-700 font-medium border border-green-200 py-2 rounded-lg hover:bg-green-50 transition"
                 >
                     View Details
                 </Link>

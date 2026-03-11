@@ -34,8 +34,24 @@ function Footer() {
 
             </div>
 
-            <div className="text-center text-gray-500 text-sm pb-6">
-                © {new Date().getFullYear()} TadobaLand. All rights reserved.
+            <div className="text-center text-gray-500 text-sm pb-6 space-y-1">
+
+                <div>
+                    © {new Date().getFullYear()} TadobaLand. All rights reserved.
+                </div>
+
+                <div>
+                    Technology Partner:{" "}
+                    <a
+                        href="https://vedaxon.com"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="font-semibold text-green-700 hover:underline"
+                    >
+                        Vedaxon
+                    </a>
+                </div>
+
             </div>
         </footer>
     );
