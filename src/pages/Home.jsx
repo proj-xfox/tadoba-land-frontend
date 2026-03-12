@@ -276,7 +276,7 @@ function Home() {
                         <PropertyRow
                             title="Owner Listings"
                             properties={ownerListings}
-                            seeAllLink="/properties/owners"
+                            seeAllLink="/properties/owner"
                         />
 
                         <AgentCarousel
@@ -286,7 +286,7 @@ function Home() {
                         <PropertyRow
                             title="Listed by Agents"
                             properties={agentListings}
-                            seeAllLink="/properties/agents"
+                            seeAllLink="/properties/agent"
                         />
                     </>
                 ) : (

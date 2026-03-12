@@ -8,6 +8,8 @@ import AddProperty from "../pages/AddProperty";
 import PropertyDetails from "../pages/PropertyDetails";
 import MyProperties from "../pages/MyProperties";
 import AgentProfile from "../pages/AgentProfile";
+import PropertiesList from "../pages/PropertiesList";
+
 
 function AppRoutes() {
     return (
@@ -28,6 +30,8 @@ function AppRoutes() {
 
                 {/* Agent profile page */}
                 <Route path="/agent/:slug" element={<AgentProfile />} />
+
+                <Route path="/properties/:type" element={<PropertiesList />} />
 
             </Routes>
         </BrowserRouter>
