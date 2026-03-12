@@ -10,6 +10,8 @@ import SearchBar from "../components/search/SearchBar";
 import Filters from "../components/search/Filters";
 import PropertyCarousel from "../components/property/PropertyCarousel";
 import AgentCarousel from "../components/agents/AgentCarousel";
+import LifeAroundTadoba from "../components/home/LifeAroundTadoba";
+import SafariGates from "../components/home/SafariGates";
 
 function Home() {
 
@@ -261,22 +263,20 @@ function Home() {
             <Navbar onSearch={handleSearch} />
             <div className="pt-10">
                 <PropertyCarousel
-                    title="🔥 Hot Deals Near Tadoba"
+                    title="Hot Deals Near Tadoba"
                     properties={properties}
                 />
             </div>
-            <div className="max-w-7xl mx-auto px-4 pt-10 pb-6">
 
-
-
-                {/* <Filters filters={filters} onChange={setFilters} /> */}
-
+            <SafariGates />
+            <div className="max-w-7xl mx-auto px-4  pb-6">
                 {/* Discovery Sections */}
                 {searchQuery === "" ? (
                     <>
                         <PropertyRow
                             title="Owner Listings"
                             properties={ownerListings}
+                            seeAllLink="/properties/owners"
                         />
 
                         <AgentCarousel
@@ -286,6 +286,7 @@ function Home() {
                         <PropertyRow
                             title="Listed by Agents"
                             properties={agentListings}
+                            seeAllLink="/properties/agents"
                         />
                     </>
                 ) : (
@@ -304,6 +305,7 @@ function Home() {
 
             </div>
 
+            <LifeAroundTadoba />
             <Footer />
         </>
     );

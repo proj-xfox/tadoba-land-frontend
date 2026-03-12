@@ -21,7 +21,7 @@ function AgentCarousel({ title, agents }) {
     };
 
     return (
-        <div className="relative mt-1 max-w-7xl mx-auto px-4 pt-10 pb-6">
+        <div className="relative mt-1 max-w-7xl mx-auto px-4  pb-6">
 
             <h2 className="text-xl font-semibold mb-4">
                 {title}
@@ -38,7 +38,7 @@ function AgentCarousel({ title, agents }) {
             {/* CAROUSEL */}
             <div
                 ref={scrollRef}
-                className="flex gap-4 overflow-x-auto scroll-smooth px-10 py-3"
+                className="flex gap-2 overflow-x-auto scroll-smooth px-10 py-3"
                 style={{ scrollbarWidth: "none" }}
             >
                 {agents.map((agent) => (

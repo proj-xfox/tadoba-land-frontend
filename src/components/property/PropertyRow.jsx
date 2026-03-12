@@ -1,8 +1,9 @@
 import { useRef, useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import PropertyCard from "./PropertyCard";
 
-function PropertyRow({ title, properties }) {
+function PropertyRow({ title, properties, seeAllLink }) {
 
     const scrollRef = useRef(null);
 
@@ -43,18 +44,31 @@ function PropertyRow({ title, properties }) {
     };
 
     return (
-        <div className="mb-10 mt-10 relative">
+        <div className="mb-10 relative">
 
-            {/* Title */}
-            <h2 className="text-xl font-semibold mb-4">
-                {title}
-            </h2>
+            {/* HEADER */}
+            <div className="flex items-center justify-between mb-4">
+
+                <h2 className="text-xl font-semibold">
+                    {title}
+                </h2>
+
+                {seeAllLink && (
+                    <Link
+                        to={seeAllLink}
+                        className="text-green-700 text-sm font-medium hover:text-green-800"
+                    >
+                        See all properties →
+                    </Link>
+                )}
+
+            </div>
 
             {/* LEFT ARROW */}
             {showLeft && (
                 <button
                     onClick={scrollLeft}
-                    className="absolute left-0 top-[55%] -translate-y-1/2 z-10 bg-white/90 backdrop-blur shadow-md rounded-full p-2 hover:bg-white"
+                    className="absolute left-0 top-[60%] -translate-y-1/2 z-10 bg-white/90 backdrop-blur shadow-md rounded-full p-2 hover:bg-white"
                 >
                     <ChevronLeft size={20} />
                 </button>
@@ -77,7 +91,7 @@ function PropertyRow({ title, properties }) {
             {showRight && (
                 <button
                     onClick={scrollRight}
-                    className="absolute right-0 top-[55%] -translate-y-1/2 z-10 bg-white/90 backdrop-blur shadow-md rounded-full p-2 hover:bg-white"
+                    className="absolute right-0 top-[60%] -translate-y-1/2 z-10 bg-white/90 backdrop-blur shadow-md rounded-full p-2 hover:bg-white"
                 >
                     <ChevronRight size={20} />
                 </button>

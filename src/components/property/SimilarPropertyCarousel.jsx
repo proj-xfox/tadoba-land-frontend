@@ -2,7 +2,7 @@ import { useRef } from "react";
 import DealCard from "./DealCard";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-function PropertyCarousel({ title, properties }) {
+function SimilarPropertyCarousel({ title, properties }) {
     const scrollRef = useRef(null);
 
     const scrollLeft = () => {
@@ -20,7 +20,7 @@ function PropertyCarousel({ title, properties }) {
     };
 
     return (
-        <div className="relative mt-1 max-w-7xl mx-auto px-4 pt-10 pb-6">
+        <div className="relative mt-1 max-w-7xl mx-auto px-4">
 
             <h2 className="text-xl font-semibold mb-4">
                 {title}
@@ -58,4 +58,4 @@ function PropertyCarousel({ title, properties }) {
     );
 }
 
-export default PropertyCarousel;
+export default SimilarPropertyCarousel;
