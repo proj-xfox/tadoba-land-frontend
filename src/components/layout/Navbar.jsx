@@ -7,10 +7,15 @@ function Navbar({ onSearch }) {
         <nav className="fixed top-0 left-0 w-full bg-white shadow-md z-50">
             <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
 
-                {/* Logo */}
-                <Link to="/" className="text-2xl font-bold text-green-700">
-                    TadobaLand
-                </Link>
+                <div className="flex items-center gap-2">
+                    <span className="tiger">🐅</span>
+
+                    {/* Logo */}
+                    <Link to="/" className="text-2xl font-bold text-green-700">
+                        TadobaLand
+                    </Link>
+
+                </div>
 
                 {/* Search */}
                 <div className="flex-1 max-w-xl">

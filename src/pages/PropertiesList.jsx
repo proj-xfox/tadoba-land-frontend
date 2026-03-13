@@ -1,8 +1,10 @@
+// src/pages/PropertiesList.jsx
 import { useParams } from "react-router-dom";
 
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import PropertyCardList from "../components/property/PropertyCardList";
+import SafariGates from "../components/home/SafariGates";
 
 function PropertiesList() {
 
@@ -116,8 +118,8 @@ function PropertiesList() {
     return (
         <>
             <Navbar />
-
-            <div className="max-w-7xl mx-auto mt-10 px-4 py-10">
+            <SafariGates />
+            <div className="w-full bg-gray-100 mx-auto mt-10 px-20 py-10">
 
                 <h1 className="text-2xl font-semibold mb-6">
                     {type === "owner"
@@ -131,7 +133,7 @@ function PropertiesList() {
                     {/* LEFT LISTINGS */}
                     <div className="lg:col-span-3">
 
-                        <div className="space-y-6">
+                        <div className="space-y-4">
                             {filtered.map((property) => (
                                 <PropertyCardList
                                     key={property.id}
@@ -155,7 +157,7 @@ function PropertiesList() {
                                 Reach investors looking for land near Tadoba
                             </p>
 
-                            <button className="bg-green-700 text-white px-4 py-2 rounded">
+                            <button className="bg-yellow-500  text-black  font-bold px-4 py-2 rounded">
                                 Post Property
                             </button>
                         </div>

@@ -56,6 +56,8 @@ function PropertyRow({ title, properties, seeAllLink }) {
                 {seeAllLink && (
                     <Link
                         to={seeAllLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="text-green-700 text-sm font-medium hover:text-green-800"
                     >
                         See all properties →

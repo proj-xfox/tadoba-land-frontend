@@ -1,3 +1,4 @@
+// src/pages/AgentProfile.jsx
 import { useParams } from "react-router-dom";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
@@ -115,7 +116,7 @@ function AgentProfile() {
                             <h1 className="text-3xl font-bold text-white">
                                 {agent.name}
 
-                                <span className="ml-3 text-xs bg-green-600 text-white px-2 py-1 rounded">
+                                <span className="ml-3 text-xs bg-yellow-400 text-black px-2 py-1 rounded">
                                     ✔ Verified Partner
                                 </span>
 

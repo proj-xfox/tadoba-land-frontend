@@ -1,14 +1,27 @@
 import { Link } from "react-router-dom";
-
+import { Heart, Share2 } from "lucide-react";
 function PropertyCardList({ property }) {
 
     return (
-        <div className="border rounded-lg overflow-hidden bg-white hover:shadow-md transition">
-
+        <div className="border border-gray-300 rounded-lg overflow-hidden bg-white hover:shadow-lg transition-all duration-300">
             <div className="grid grid-cols-1 md:grid-cols-12">
 
+
                 {/* IMAGE */}
-                <div className="md:col-span-3">
+                <div className="md:col-span-3 relative" >
+
+                    {/* ICONS */}
+                    <div className="absolute top-2 right-2 flex gap-2">
+
+                        <button className="bg-white p-1.5 rounded-full shadow hover:bg-gray-100">
+                            <Heart size={18} className="text-gray-700" />
+                        </button>
+
+                        <button className="bg-white p-1.5 rounded-full shadow hover:bg-gray-100">
+                            <Share2 size={18} className="text-gray-700" />
+                        </button>
+
+                    </div>
                     <img
                         src={property.image}
                         alt={property.title}
@@ -47,11 +60,12 @@ function PropertyCardList({ property }) {
                 </div>
 
                 {/* PRICE + CTA */}
-                <div className="md:col-span-3 p-4 md:border-l flex flex-col justify-between">
+                <div className="md:col-span-3 bg-gray-100 p-4 md:border-l flex flex-col justify-center items-center h-full">
 
-                    <div className="mb-4 md:mb-0">
+                    {/* PRICE */}
+                    <div className="text-center mb-4">
 
-                        <div className="text-xl md:text-2xl font-bold text-gray-900">
+                        <div className="text-xl font-bold text-gray-900">
                             {property.price}
                         </div>
 
@@ -61,16 +75,17 @@ function PropertyCardList({ property }) {
 
                     </div>
 
-                    <div className="flex flex-col gap-2">
+                    {/* BUTTONS */}
+                    <div className="flex flex-col gap-2 w-full max-w-[160px]">
 
                         <Link
                             to={`/property/${property.id}`}
-                            className="block bg-green-700 text-white text-center py-2 rounded hover:bg-green-800"
+                            className="bg-orange-700 text-white text-sm py-1.5 rounded text-center hover:bg-green-800"
                         >
                             View Details
                         </Link>
 
-                        <button className="border border-green-700 text-green-700 py-2 rounded hover:bg-green-50">
+                        <button className="border border-green-700 text-green-700 text-sm py-1.5 rounded hover:bg-green-50">
                             Contact Owner
                         </button>
 

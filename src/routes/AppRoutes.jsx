@@ -9,7 +9,9 @@ import PropertyDetails from "../pages/PropertyDetails";
 import MyProperties from "../pages/MyProperties";
 import AgentProfile from "../pages/AgentProfile";
 import PropertiesList from "../pages/PropertiesList";
-
+import About from "../pages/About";
+import PrivacyPolicy from "../pages/PrivacyPolicy";
+import TermsOfUse from "../pages/TermsOfUse";
 
 function AppRoutes() {
     return (
@@ -32,6 +34,10 @@ function AppRoutes() {
                 <Route path="/agent/:slug" element={<AgentProfile />} />
 
                 <Route path="/properties/:type" element={<PropertiesList />} />
+
+                <Route path="/about" element={<About />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                <Route path="/terms-of-use" element={<TermsOfUse />} />
 
             </Routes>
         </BrowserRouter>

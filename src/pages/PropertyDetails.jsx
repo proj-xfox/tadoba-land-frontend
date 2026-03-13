@@ -1,3 +1,4 @@
+// src/pages/PropertyDetails.jsx
 import { useParams } from "react-router-dom";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
@@ -182,10 +183,10 @@ function PropertyDetails() {
         <>
             <Navbar />
 
-            <div className="max-w-6xl mx-auto px-4 mt-10 py-10">
+            <div className="w-full bg-gray-100 mx-auto px-20 mt-10 py-10">
 
                 {/* MAIN GRID */}
-                <div className="grid lg:grid-cols-3 gap-8">
+                <div className="grid lg:grid-cols-3 gap-3 ">
 
                     {/* LEFT PANEL */}
                     <div className="lg:col-span-2">
@@ -243,7 +244,7 @@ function PropertyDetails() {
 
 
                         {/* LAND DETAILS */}
-                        <div className="mt-4 border rounded-lg p-6 shadow-sm">
+                        <div className="mt-4 border rounded-lg p-6 shadow-sm bg-white">
 
                             <h2 className="text-xl font-semibold mb-4">
                                 Land Details
@@ -276,7 +277,7 @@ function PropertyDetails() {
                         </div>
 
                         {/* DESCRIPTION */}
-                        <div className="mt-4 border rounded-lg p-6 shadow-sm">
+                        <div className="mt-4 border rounded-lg p-6 shadow-sm bg-white">
 
                             <h2 className="text-xl font-semibold mb-4">
                                 Description
@@ -289,7 +290,7 @@ function PropertyDetails() {
                         </div>
 
                         {/* LOCATION */}
-                        <div className="mt-4 border rounded-lg p-6 shadow-sm">
+                        <div className="mt-4 border rounded-lg p-6 shadow-sm bg-white">
 
                             <h2 className="text-xl font-semibold mb-4">
                                 Location & Nearby Safari Gates
@@ -341,7 +342,7 @@ function PropertyDetails() {
                     {/* RIGHT STICKY CARD */}
                     <div>
 
-                        <div className="sticky top-24 border rounded-lg p-6 shadow-sm">
+                        <div className="sticky top-24 border rounded-lg p-6 shadow-sm bg-white">
 
                             <h1 className="text-xl font-bold text-gray-800">
                                 {property.title}
@@ -386,61 +387,8 @@ function PropertyDetails() {
 
                 </div>
 
-                {/* SIMILAR PROPERTIES */}
-                {/* <div className="w-full bg-gray-50 py-12 mt-10 rounded-lg">
 
-                    <div className="max-w-7xl mx-auto px-4">
-
-                        <h2 className="text-2xl font-semibold mb-6">
-                            Similar Lands Near Tadoba
-                        </h2>
-
-                        <div className="flex gap-6 overflow-x-auto pb-4">
-
-                            {[1, 2, 3, 4, 5].map((item) => (
-
-                                <div
-                                    key={item}
-                                    className="min-w-[280px] bg-white border rounded-lg shadow-sm hover:shadow-md transition"
-                                >
-
-                                    <img
-                                        src="https://images.unsplash.com/photo-1500382017468-9049fed747ef"
-                                        className="h-40 w-full object-cover rounded-t-lg"
-                                        alt=""
-                                    />
-
-                                    <div className="p-4">
-
-                                        <p className="font-semibold text-gray-800">
-                                            1 Acre Land near Kolara
-                                        </p>
-
-                                        <p className="text-green-700 font-bold mt-1">
-                                            ₹10,50,000
-                                        </p>
-
-                                        <p className="text-sm text-gray-500 mt-1">
-                                            6 km from Tadoba Gate
-                                        </p>
-
-                                        <button className="mt-3 w-full border border-green-700 text-green-700 py-1.5 rounded hover:bg-green-50">
-                                            View Details
-                                        </button>
-
-                                    </div>
-
-                                </div>
-
-                            ))}
-
-                        </div>
-
-                    </div>
-
-                </div>
- */}
-                <div className="mt-4 border rounded-lg p-6 shadow-sm">
+                <div className="mt-4 border rounded-lg p-6 shadow-sm bg-white">
                     <PropertyCarousel
                         title="Similar Lands/Properties in same area"
                         properties={properties}

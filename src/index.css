@@ -6,3 +6,22 @@
 ::-webkit-scrollbar {
     display: none;
 }
+
+.tiger {
+    display: inline-block;
+    animation: tigerWalk 2s linear infinite;
+}
+
+@keyframes tigerWalk {
+    0% {
+        transform: translateX(0px);
+    }
+
+    50% {
+        transform: translateX(4px);
+    }
+
+    100% {
+        transform: translateX(0px);
+    }
+}

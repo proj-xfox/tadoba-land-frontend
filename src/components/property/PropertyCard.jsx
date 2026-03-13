@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 function PropertyCard({ property }) {
     return (
-        <div className="bg-white shadow rounded overflow-hidden hover:shadow-lg transition">
+        <div className="bg-white shadow rounded  overflow-hidden hover:shadow-lg transition">
 
             <img
                 src={property.image}
