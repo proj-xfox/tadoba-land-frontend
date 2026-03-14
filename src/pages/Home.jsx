@@ -12,6 +12,7 @@ import PropertyCarousel from "../components/property/PropertyCarousel";
 import AgentCarousel from "../components/agents/AgentCarousel";
 import LifeAroundTadoba from "../components/home/LifeAroundTadoba";
 import SafariGates from "../components/home/SafariGates";
+import LandInsights from "../components/home/LandInsights";
 
 function Home() {
 
@@ -32,56 +33,58 @@ function Home() {
             name: "Rajesh Wankhede",
             location: "Moharli",
             listings: 12,
+            experience: 10, locations: ["Chimur", "Adegaon"],
             avatar: "https://i.pravatar.cc/100?img=3",
         },
         {
             id: 2,
             name: "Prakash Chavan",
             location: "Kolara",
-            listings: 8,
+            listings: 8, experience: 10, locations: ["Chimur", "Adegaon"],
             avatar: "https://i.pravatar.cc/100?img=5",
         },
         {
             id: 3,
             name: "Mahesh Bansod",
             location: "Adegaon",
-            listings: 15,
+            listings: 15, experience: 10, locations: ["Chimur", "Adegaon"],
             avatar: "https://i.pravatar.cc/100?img=7",
         },
         {
             id: 4,
             name: "Nitin Bhoyar",
-            location: "Chimur",
-            listings: 6,
+            location: "Chimur", experience: 10,
+            listings: 6, locations: ["Chimur", "Adegaon"],
             avatar: "https://i.pravatar.cc/100?img=8",
         },
 
         {
             id: 5,
             name: "Rajesh Tevar",
-            location: "Adegaon",
-            listings: 15,
+            location: "Adegaon", experience: 10,
+            listings: 15, locations: ["Chimur", "Adegaon"],
             avatar: "https://i.pravatar.cc/100?img=7",
         },
         {
             id: 6,
             name: "Ramesh Kale",
-            location: "Chimur",
-            listings: 6,
+            location: "Chimur", experience: 10,
+            listings: 6, locations: ["Chimur", "Adegaon"],
             avatar: "https://i.pravatar.cc/100?img=8",
         },
         {
             id: 7,
             name: "Sagar Mundada",
-            location: "Adegaon",
-            listings: 15,
+            location: "Adegaon", experience: 10,
+            listings: 15, locations: ["Chimur", "Adegaon"],
             avatar: "https://i.pravatar.cc/100?img=7",
         },
         {
             id: 8,
             name: "Kishr Desai",
-            location: "Chimur",
+            location: "Chimur", experience: 10,
             listings: 6,
+            locations: ["Chimur", "Adegaon"],
             avatar: "https://i.pravatar.cc/100?img=8",
         },
     ];
@@ -306,6 +309,8 @@ function Home() {
             </div>
 
             <LifeAroundTadoba />
+            <LandInsights />
+
             <Footer />
         </>
     );

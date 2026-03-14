@@ -1,3 +1,4 @@
+//src/components/home/LifeAroundTadoba.jsx
 import { Link } from "react-router-dom";
 
 function LifeAroundTadoba() {

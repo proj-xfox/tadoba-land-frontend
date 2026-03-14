@@ -1,3 +1,4 @@
+//src/components/agents/AgentCarousel.jsx
 import { useRef } from "react";
 import AgentCard from "./AgentCard";
 import { ChevronLeft, ChevronRight } from "lucide-react";

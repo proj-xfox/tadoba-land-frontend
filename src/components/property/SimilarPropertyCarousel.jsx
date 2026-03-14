@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import DealCard from "./DealCard";
+import SimilarPropertyCard from "./SimilarPropertyCard";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 function SimilarPropertyCarousel({ title, properties }) {
@@ -41,7 +41,7 @@ function SimilarPropertyCarousel({ title, properties }) {
                 style={{ scrollbarWidth: "none" }}
             >
                 {properties.map((property) => (
-                    <DealCard key={property.id} property={property} />
+                    <SimilarPropertyCard key={property.id} property={property} />
                 ))}
             </div>
 

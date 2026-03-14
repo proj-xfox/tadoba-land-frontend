@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
+import SimilarPropertyCarousel from "./SimilarPropertyCarousel";
 
-function DealCard({ property }) {
+function SimilarPropertyCard({ property }) {
     return (
 
         <Link
@@ -50,4 +51,4 @@ function DealCard({ property }) {
     );
 }
 
-export default DealCard;
+export default SimilarPropertyCard;

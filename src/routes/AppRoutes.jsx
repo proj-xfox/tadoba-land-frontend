@@ -12,10 +12,15 @@ import PropertiesList from "../pages/PropertiesList";
 import About from "../pages/About";
 import PrivacyPolicy from "../pages/PrivacyPolicy";
 import TermsOfUse from "../pages/TermsOfUse";
+import ExploreTadoba from "../pages/ExploreTadoba";
+import ScrollToTop from "../components/helper/ScrollToTop";
+import InsightArticle from "../pages/InsightArticle";
 
 function AppRoutes() {
     return (
         <BrowserRouter>
+            <ScrollToTop />
+
             <Routes>
 
                 <Route path="/" element={<Home />} />
@@ -38,6 +43,8 @@ function AppRoutes() {
                 <Route path="/about" element={<About />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/terms-of-use" element={<TermsOfUse />} />
+                <Route path="/explore-tadoba" element={<ExploreTadoba />} />
+                <Route path="/insights/:slug" element={<InsightArticle />} />
 
             </Routes>
         </BrowserRouter>
