@@ -13,6 +13,7 @@ import AgentCarousel from "../components/agents/AgentCarousel";
 import LifeAroundTadoba from "../components/home/LifeAroundTadoba";
 import SafariGates from "../components/home/SafariGates";
 import LandInsights from "../components/home/LandInsights";
+import SellPropertyCTA from "../components/home/SellPropertyCTA";
 
 function Home() {
 
@@ -309,6 +310,8 @@ function Home() {
             </div>
 
             <LifeAroundTadoba />
+            <SellPropertyCTA />
+
             <LandInsights />
 
             <Footer />

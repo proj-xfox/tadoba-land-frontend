@@ -15,6 +15,7 @@ import TermsOfUse from "../pages/TermsOfUse";
 import ExploreTadoba from "../pages/ExploreTadoba";
 import ScrollToTop from "../components/helper/ScrollToTop";
 import InsightArticle from "../pages/InsightArticle";
+import Insights from "../pages/Insights";
 
 function AppRoutes() {
     return (
@@ -45,7 +46,7 @@ function AppRoutes() {
                 <Route path="/terms-of-use" element={<TermsOfUse />} />
                 <Route path="/explore-tadoba" element={<ExploreTadoba />} />
                 <Route path="/insights/:slug" element={<InsightArticle />} />
-
+                <Route path="/insights" element={<Insights />} />
             </Routes>
         </BrowserRouter>
     );

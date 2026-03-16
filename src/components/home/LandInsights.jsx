@@ -1,6 +1,8 @@
+//src/components/home/LandInsights.jsx
 import { useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import ArticleCard from "./ArticleCard";
+import { Link } from "react-router-dom";
 
 function LandInsights() {
 
@@ -63,24 +65,25 @@ function LandInsights() {
     return (
         <section className="bg-white py-14">
 
-            <div className="max-w-7xl mx-auto px-4">
+            <div className="max-w-7xl mx-20 px-4">
 
                 {/* Header */}
                 <div className="flex justify-between items-center mb-8">
 
                     <div>
                         <h2 className="text-3xl font-bold">
-                            Land Insights
+                            Land Insights & News
                         </h2>
                         <p className="text-gray-600">
                             Read what's happening around Tadoba land market
                         </p>
                     </div>
 
-                    <button className="border border-purple-500 text-purple-600 px-4 py-2 rounded-md text-sm hover:bg-purple-50">
-                        See all insights →
-                    </button>
-
+                    <Link
+                        to="/insights"
+                        className="border border-green-500 text-green-500 px-4 py-2 rounded-md text-sm hover:bg-green-100">
+                        See all Land insights & news →
+                    </Link>
                 </div>
 
                 {/* Carousel */}
@@ -116,7 +119,7 @@ function LandInsights() {
 
             </div>
 
-        </section>
+        </section >
     );
 }
 
