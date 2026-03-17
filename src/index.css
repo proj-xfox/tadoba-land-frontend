@@ -39,3 +39,39 @@ body {
         transform: translateX(0px);
     }
 }
+
+@keyframes arrowRight {
+    0% {
+        transform: translateX(0);
+    }
+
+    50% {
+        transform: translateX(6px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+@keyframes arrowLeft {
+    0% {
+        transform: translateX(0);
+    }
+
+    50% {
+        transform: translateX(-6px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+.animate-arrow-right {
+    animation: arrowRight 1.5s infinite;
+}
+
+.animate-arrow-left {
+    animation: arrowLeft 1.5s infinite;
+}

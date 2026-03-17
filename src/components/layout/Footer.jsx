@@ -1,4 +1,9 @@
 // src/components/layout/Footer.jsx
+
+import { Youtube, Instagram, Linkedin } from "lucide-react";
+
+
+
 function Footer() {
     return (
         <footer className="bg-gray-100 mt-1">
@@ -10,6 +15,59 @@ function Footer() {
                         Marketplace for land and resort investment opportunities near
                         Tadoba Tiger Reserve.
                     </p>
+
+
+                    <div className="mt-4">
+                        <p className="text-sm font-medium text-gray-700 mb-2">
+                            Follow TadobaLand
+                        </p>
+
+                        <div className="flex gap-4 items-center">
+
+                            {/* YOUTUBE */}
+                            <a
+                                href="https://youtube.com/@yourchannel"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <img
+                                    src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg"
+                                    alt="YouTube"
+                                    className="w-5 h-5 hover:scale-110 transition"
+                                    style={{ filter: "invert(15%) sepia(100%) saturate(6000%) hue-rotate(0deg)" }}
+                                />
+                            </a>
+
+                            {/* INSTAGRAM */}
+                            <a
+                                href="https://instagram.com/yourprofile"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <img
+                                    src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg"
+                                    alt="Instagram"
+                                    className="w-5 h-5 hover:scale-110 transition"
+                                    style={{ filter: "invert(35%) sepia(90%) saturate(2000%) hue-rotate(280deg)" }}
+                                />
+                            </a>
+
+                            {/* LINKEDIN */}
+                            <a
+                                href="https://linkedin.com/company/yourcompany"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <img
+                                    src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linkedin.svg"
+                                    alt="LinkedIn"
+                                    className="w-5 h-5 hover:scale-110 transition"
+                                    style={{ filter: "invert(30%) sepia(90%) saturate(2000%) hue-rotate(200deg)" }}
+                                />
+                            </a>
+
+                        </div>
+                    </div>
                 </div>
 
                 <div>

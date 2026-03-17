@@ -63,7 +63,7 @@ function LandInsights() {
     ];
 
     return (
-        <section className="bg-white py-14">
+        <section className="bg-white py-5">
 
             <div className="max-w-7xl mx-20 px-4">
 

@@ -39,7 +39,7 @@ function AgentCard({ agent }) {
 
                 <span className="mx-2 text-gray-300">|</span>
 
-                <span className="font-medium">{agent.listings}</span> Total listings
+                <span className="font-medium">{agent.listings}</span> Listings
 
             </div>
 

@@ -1,5 +1,6 @@
 //src/components/home/LifeAroundTadoba.jsx
 import { Link } from "react-router-dom";
+import safari from "../../assets/images/tadobasafari.jpg";
 
 function LifeAroundTadoba() {
 
@@ -24,8 +25,7 @@ function LifeAroundTadoba() {
             title: "Safari & Tourism",
             description:
                 "Thousands of tourists visit Tadoba every year for jungle safari experiences. Growing tourism is creating opportunities for land investment and eco tourism projects.",
-            image:
-                "https://images.unsplash.com/photo-1546182990-dffeafbe841d?q=80&w=1200",
+            image: safari,
             link: "/explore-tadoba#tourism",
         },
     ];

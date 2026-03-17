@@ -3,12 +3,12 @@ import { Link } from "react-router-dom";
 function ArticleCard({ article }) {
     return (
         <Link to={`/insights/${article.slug}`}>
-            <div className="min-w-[360px] max-w-[360px] bg-white rounded-lg overflow-hidden">
+            <div className="min-w-[360px] max-w-[360px] bg-white rounded-md overflow-hidden">
 
                 <img
                     src={article.image}
                     alt={article.title}
-                    className="w-full h-48 object-cover"
+                    className="w-full h-40 object-cover"
                 />
 
                 <div className="py-3">

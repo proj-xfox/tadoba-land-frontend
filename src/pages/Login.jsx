@@ -1,48 +1,97 @@
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { ChevronRight, ChevronLeft } from "lucide-react";
 
 function Login() {
+
+    const leftSlides = [
+        "Discover Land Opportunities Around Tadoba",
+        "Direct Owner Listings — No Middlemen",
+        "Find Resort & Farm Land Deals"
+    ];
+
+    const rightSlides = [
+        "Sell Your Land Easily",
+        "Reach Genuine Buyers",
+        "List Your Property in Minutes"
+    ];
+
+    const [leftIndex, setLeftIndex] = useState(0);
+    const [rightIndex, setRightIndex] = useState(0);
+    const [open, setOpen] = useState(false);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setLeftIndex((prev) => (prev + 1) % leftSlides.length);
+            setRightIndex((prev) => (prev + 1) % rightSlides.length);
+        }, 4000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    const properties = [1, 2, 3, 4];
+
     return (
-        <div className="min-h-screen relative grid grid-cols-1 md:grid-cols-2">
+        <div className="min-h-screen grid grid-cols-1 md:grid-cols-3 relative">
 
-            {/* BRAND LINK */}
-            <div className="absolute top-0 left-0 w-full p-4">
-                <Link
-                    to="/"
-                    className="text-xl font-bold text-green-800"
-                >
-                    TadobaLand
-                </Link>
+            {/* LEFT AREA */}
+            <div className="hidden md:flex bg-gray-100 items-center justify-center  overflow-hidden">
+
+                {!open ? (
+
+                    <div
+                        onClick={() => setOpen(true)}
+                        className="relative bg-green-800 text-white w-full h-full flex items-center justify-center text-center cursor-pointer overflow-hidden"
+                    >
+
+                        {/* TEXT */}
+                        <div className="px-10">
+                            <h2 className="text-2xl font-semibold leading-relaxed">
+                                {leftSlides[leftIndex]}
+                            </h2>
+                        </div>
+
+                        {/* EDGE INDICATOR */}
+                        <div className="absolute right-0 top-1/2 -translate-y-1/2 bg-green-700 p-3 rounded-l-lg animate-arrow-right">
+                            <ChevronRight size={24} />
+                        </div>
+
+                    </div>
+
+                ) : (
+
+                    <div className="grid grid-cols-1 gap-4 w-full">
+
+                        {properties.map((p) => (
+                            <div
+                                key={p}
+                                className="bg-white rounded shadow p-3 hover:shadow-md transition"
+                            >
+                                <div className="h-24 bg-gray-300 mb-2 rounded"></div>
+                                <p className="text-sm font-semibold">
+                                    Farm Land Near Moharli
+                                </p>
+                            </div>
+                        ))}
+
+                    </div>
+
+                )}
+
             </div>
 
-            {/* LEFT SIDE (hidden on mobile) */}
-            <div className="hidden md:flex bg-green-800 text-white flex-col justify-center p-12">
 
-                <h1 className="text-3xl font-bold mb-6">
-                    Discover Land Opportunities
-                    Around Tadoba
-                </h1>
-
-                <ul className="space-y-3 text-lg">
-                    <li>✔ Direct owner listings</li>
-                    <li>✔ Resort & farm land deals</li>
-                    <li>✔ Connect with genuine buyers</li>
-                </ul>
-
-            </div>
-
-
-            {/* RIGHT SIDE */}
+            {/* LOGIN */}
             <div className="flex items-center justify-center bg-gray-50 px-4">
 
                 <div className="bg-white p-6 md:p-8 rounded-lg shadow-md w-full max-w-md">
 
-                    <h2 className="text-xl md:text-2xl font-semibold mb-6 text-center md:text-left">
+                    <h2 className="text-xl md:text-2xl font-semibold mb-6 text-center">
                         Login to TadobaLand
                     </h2>
 
                     <div className="space-y-4">
 
-                        {/* MOBILE NUMBER */}
                         <div className="flex border rounded overflow-hidden">
                             <span className="px-3 flex items-center bg-gray-100 text-sm">
                                 +91
@@ -55,37 +104,17 @@ function Login() {
                             />
                         </div>
 
-                        {/* PASSWORD */}
                         <input
                             type="password"
                             placeholder="Password"
                             className="w-full border rounded px-3 py-2"
                         />
 
-                        {/* FORGOT PASSWORD */}
-                        <div className="text-right text-sm">
-                            <Link
-                                to="/forgot-password"
-                                className="text-green-700 hover:underline"
-                            >
-                                Forgot Password?
-                            </Link>
-                        </div>
-
-                        {/* LOGIN BUTTON */}
                         <button className="w-full bg-green-700 text-white py-2 rounded">
                             Login
                         </button>
 
                     </div>
-
-                    <div className="mt-6 text-center text-sm text-gray-500">
-                        or
-                    </div>
-
-                    <button className="w-full border py-2 rounded mt-4">
-                        Continue with Google
-                    </button>
 
                     <p className="text-sm text-center mt-6">
                         New here?{" "}
@@ -98,6 +127,53 @@ function Login() {
                     </p>
 
                 </div>
+
+            </div>
+
+
+            {/* RIGHT AREA */}
+            <div className="hidden md:flex bg-gray-100 items-center justify-center  overflow-hidden">
+
+                {!open ? (
+
+                    <div
+                        onClick={() => setOpen(true)}
+                        className="relative bg-gray-900 text-white w-full h-full flex items-center justify-center text-center cursor-pointer overflow-hidden"
+                    >
+
+                        {/* TEXT */}
+                        <div className="px-10">
+                            <h2 className="text-2xl font-semibold leading-relaxed">
+                                {rightSlides[rightIndex]}
+                            </h2>
+                        </div>
+
+                        {/* EDGE INDICATOR */}
+                        <div className="absolute left-0 top-1/2 -translate-y-1/2 bg-gray-800 p-3 rounded-r-lg animate-arrow-left">
+                            <ChevronLeft size={24} />
+                        </div>
+
+                    </div>
+
+                ) : (
+
+                    <div className="grid grid-cols-1 gap-4 w-full">
+
+                        {properties.map((p) => (
+                            <div
+                                key={p}
+                                className="bg-white rounded shadow p-3 hover:shadow-md transition"
+                            >
+                                <div className="h-24 bg-gray-300 mb-2 rounded"></div>
+                                <p className="text-sm font-semibold">
+                                    Resort Plot Near Tadoba
+                                </p>
+                            </div>
+                        ))}
+
+                    </div>
+
+                )}
 
             </div>
 
