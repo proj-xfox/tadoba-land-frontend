@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getFeaturedPropertiesApi, getOwnerPropertiesApi, getAgentPropertiesApi } from "../api/propertyApi";
+import { getTopAgentsApi } from "../api/agentApi";
 
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
@@ -23,13 +24,14 @@ function Home() {
         area: ""
     });
 
+    const [agents, setAgents] = useState([]);
     const [featuredProperties, setFeaturedProperties] = useState([]);
     const [loadingFeatured, setLoadingFeatured] = useState(true);
 
     const [ownerProperties, setOwnerProperties] = useState([]);
     const [agentProperties, setAgentProperties] = useState([]);
 
-    const fetchOwner = async () => {
+    const fetchOwnerListings = async () => {
         try {
             const res = await getOwnerPropertiesApi();
             setOwnerProperties(res.data);
@@ -38,7 +40,7 @@ function Home() {
         }
     };
 
-    const fetchAgent = async () => {
+    const fetchAgentListings = async () => {
         try {
             const res = await getAgentPropertiesApi();
             setAgentProperties(res.data);
@@ -58,10 +60,22 @@ function Home() {
         }
     };
 
+    const fetchAgents = async () => {
+        try {
+            const res = await getTopAgentsApi();
+            console.log("Top agents fetched:=================", res.data);
+
+            setAgents(res.data);
+        } catch (err) {
+            console.error("Agent fetch error:", err);
+        }
+    };
+
     useEffect(() => {
         fetchFeatured();
-        fetchOwner();
-        fetchAgent();
+        fetchOwnerListings();
+        fetchAgentListings();
+        fetchAgents();
     }, []);
 
     const formattedFeatured = featuredProperties.map(p => ({
@@ -344,7 +358,7 @@ function Home() {
 
                         <AgentCarousel
                             title="Top Land Partners Around Tadoba"
-                            agents={topAgents}
+                            agents={agents}
                         />
 
                         <PropertyRow
@@ -361,7 +375,7 @@ function Home() {
                         </div>
                         <AgentCarousel
                             title="Top Land Partners Around Tadoba"
-                            agents={topAgents}
+                            agents={agents}
                         />
                     </>
 
