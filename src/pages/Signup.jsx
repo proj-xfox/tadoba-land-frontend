@@ -1,10 +1,59 @@
-// src/pages/Signup.jsx
-import { Link } from "react-router-dom";
+import { signupApi } from "../api/authApi";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 function Signup() {
 
+    const [name, setName] = useState("");
+    const [phone, setPhone] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+
     const [role, setRole] = useState("buyer");
+    const [sellerType, setSellerType] = useState("OWNER"); // 🔥 new
+
+    const navigate = useNavigate();
+
+    const handleSignup = async () => {
+        try {
+            if (!name || !phone || !password) {
+                alert("Name, mobile, and password are required");
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                alert("Passwords do not match");
+                return;
+            }
+
+            setLoading(true);
+
+            const res = await signupApi({
+                name,
+                phone,
+                email,
+                password,
+                role: role === "seller" ? sellerType : "BUYER" // ✅ FIXED
+            });
+
+            // Save token
+            localStorage.setItem("token", res.token);
+
+            // Redirect
+            if (role === "seller") {
+                navigate("/add-property");
+            } else {
+                navigate("/");
+            }
+
+        } catch (err) {
+            alert(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <div className="min-h-screen grid md:grid-cols-2">
@@ -25,7 +74,6 @@ function Signup() {
 
             </div>
 
-
             {/* RIGHT SIDE */}
             <div className="flex items-center justify-center bg-gray-50">
 
@@ -35,25 +83,27 @@ function Signup() {
                         Create your account
                     </h2>
 
-                    {/* BUYER SELLER SWITCH */}
-
+                    {/* BUYER / SELLER SWITCH */}
                     <div className="flex border rounded mb-6 overflow-hidden">
 
                         <button
                             onClick={() => setRole("buyer")}
                             className={`flex-1 py-2 text-sm font-medium ${role === "buyer"
-                                ? "bg-green-700 text-white"
-                                : "bg-white text-gray-600"
+                                    ? "bg-green-700 text-white"
+                                    : "bg-white text-gray-600"
                                 }`}
                         >
                             Buyer
                         </button>
 
                         <button
-                            onClick={() => setRole("seller")}
+                            onClick={() => {
+                                setRole("seller");
+                                setSellerType("OWNER"); // default
+                            }}
                             className={`flex-1 py-2 text-sm font-medium ${role === "seller"
-                                ? "bg-green-700 text-white"
-                                : "bg-white text-gray-600"
+                                    ? "bg-green-700 text-white"
+                                    : "bg-white text-gray-600"
                                 }`}
                         >
                             Seller
@@ -61,41 +111,91 @@ function Signup() {
 
                     </div>
 
+                    {/* 🔥 OWNER / AGENT SELECTOR */}
+                    {role === "seller" && (
+                        <div className="mb-6">
+
+                            <p className="text-sm font-medium mb-2">
+                                You are:
+                            </p>
+
+                            <div className="flex gap-4">
+
+                                <label className="flex items-center gap-2">
+                                    <input
+                                        type="radio"
+                                        name="sellerType"
+                                        value="OWNER"
+                                        checked={sellerType === "OWNER"}
+                                        onChange={(e) => setSellerType(e.target.value)}
+                                    />
+                                    Owner
+                                </label>
+
+                                <label className="flex items-center gap-2">
+                                    <input
+                                        type="radio"
+                                        name="sellerType"
+                                        value="AGENT"
+                                        checked={sellerType === "AGENT"}
+                                        onChange={(e) => setSellerType(e.target.value)}
+                                    />
+                                    Agent
+                                </label>
+
+                            </div>
+
+                        </div>
+                    )}
 
                     <div className="space-y-4">
 
                         <input
                             type="text"
                             placeholder="Full Name"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
                             className="w-full border rounded px-3 py-2"
                         />
 
                         <input
                             type="tel"
                             placeholder="Mobile Number"
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
                             className="w-full border rounded px-3 py-2"
                         />
 
                         <input
                             type="email"
                             placeholder="Email (optional)"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             className="w-full border rounded px-3 py-2"
                         />
 
                         <input
                             type="password"
                             placeholder="Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                             className="w-full border rounded px-3 py-2"
                         />
 
                         <input
                             type="password"
                             placeholder="Confirm Password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
                             className="w-full border rounded px-3 py-2"
                         />
 
-                        <button className="w-full bg-green-700 text-white py-2 rounded">
-                            Create Account
+                        <button
+                            onClick={handleSignup}
+                            disabled={loading}
+                            className="w-full bg-green-700 text-white py-2 rounded disabled:opacity-50"
+                        >
+                            {loading ? "Creating..." : "Create Account"}
                         </button>
 
                     </div>

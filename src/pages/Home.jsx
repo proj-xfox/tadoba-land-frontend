@@ -1,6 +1,7 @@
 // src/pages/Home.jsx
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getFeaturedPropertiesApi, getOwnerPropertiesApi, getAgentPropertiesApi } from "../api/propertyApi";
 
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
@@ -21,6 +22,67 @@ function Home() {
         type: "",
         area: ""
     });
+
+    const [featuredProperties, setFeaturedProperties] = useState([]);
+    const [loadingFeatured, setLoadingFeatured] = useState(true);
+
+    const [ownerProperties, setOwnerProperties] = useState([]);
+    const [agentProperties, setAgentProperties] = useState([]);
+
+    const fetchOwner = async () => {
+        try {
+            const res = await getOwnerPropertiesApi();
+            setOwnerProperties(res.data);
+        } catch (err) {
+            console.error("Owner fetch error:", err);
+        }
+    };
+
+    const fetchAgent = async () => {
+        try {
+            const res = await getAgentPropertiesApi();
+            setAgentProperties(res.data);
+        } catch (err) {
+            console.error("Agent fetch error:", err);
+        }
+    };
+
+    const fetchFeatured = async () => {
+        try {
+            const res = await getFeaturedPropertiesApi();
+            setFeaturedProperties(res.data);
+        } catch (err) {
+            console.error("Featured fetch error:", err);
+        } finally {
+            setLoadingFeatured(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchFeatured();
+        fetchOwner();
+        fetchAgent();
+    }, []);
+
+    const formattedFeatured = featuredProperties.map(p => ({
+        ...p,
+        village: p.gate,
+        price: `₹ ${p.price?.toLocaleString()}`,
+        area: `${p.area || ""} ${p.areaUnit || ""}`,
+        image: p.image?.thumbnail || "/placeholder.jpg"
+    }));
+
+    const formatProperties = (list) =>
+        list.map(p => ({
+            ...p,
+            village: p.gate,
+            price: `₹ ${p.price?.toLocaleString()}`,
+            area: `${p.area || ""} ${p.areaUnit || ""}`,
+            image: p.image?.thumbnail || "/placeholder.jpg"
+        }));
+
+    const formattedOwner = formatProperties(ownerProperties);
+    const formattedAgent = formatProperties(agentProperties);
 
     const [searchQuery, setSearchQuery] = useState("");
 
@@ -259,16 +321,13 @@ function Home() {
 
     });
 
-    const ownerListings = properties.filter(p => p.listedBy === "owner");
-    const agentListings = properties.filter(p => p.listedBy === "agent");
-
     return (
         <>
             <Navbar onSearch={handleSearch} />
             <div className="pt-10">
                 <PropertyCarousel
                     title="Hot Deals Near Tadoba"
-                    properties={properties}
+                    properties={formattedFeatured}
                 />
             </div>
 
@@ -279,7 +338,7 @@ function Home() {
                     <>
                         <PropertyRow
                             title="Owner Listings"
-                            properties={ownerListings}
+                            properties={formattedOwner}
                             seeAllLink="/properties/owner"
                         />
 
@@ -287,9 +346,10 @@ function Home() {
                             title="Top Land Partners Around Tadoba"
                             agents={topAgents}
                         />
+
                         <PropertyRow
                             title="Listed by Agents"
-                            properties={agentListings}
+                            properties={formattedAgent}
                             seeAllLink="/properties/agent"
                         />
                     </>

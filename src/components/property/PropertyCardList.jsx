@@ -1,6 +1,8 @@
+//src/components/property/PropertyCardList.jsx
 import { Link } from "react-router-dom";
 import { Heart, Share2 } from "lucide-react";
 function PropertyCardList({ property }) {
+    console.log("🔥 PropertyCardList property===========:", property);
 
     return (
         <div className="border border-gray-300 rounded-lg overflow-hidden bg-white hover:shadow-lg transition-all duration-300">

@@ -6,14 +6,100 @@ import PropertyDetails from "../components/property/steps/PropertyDetails";
 import PriceDetails from "../components/property/steps/PriceDetails";
 import Photos from "../components/property/steps/Photos";
 
-function AddProperty() {
+import { createPropertyApi, activatePropertyApi } from "../api/propertyApi";
 
+function AddProperty() {
     const [step, setStep] = useState(1);
+    const [propertyId, setPropertyId] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+    const [formData, setFormData] = useState({
+        title: "",
+        description: "",
+        address: "",
+        city: "",
+        gate: "",
+        type: "",
+        area: "",
+        areaUnit: "",
+        price: "",
+        contactName: "",
+        contactPhone: ""
+    });
+
+    const validateStep = () => {
+        if (step === 1) {
+            if (!formData.title || !formData.address || !formData.city) {
+                alert("Fill title, address, city");
+                return false;
+            }
+        }
+
+        if (step === 2) {
+            if (!formData.contactName || !formData.contactPhone) {
+                alert("Add contact details");
+                return false;
+            }
+        }
+
+        return true;
+    };
+
+    const handleNext = async () => {
+        if (!validateStep()) return;
+
+        // 🔥 Create property as DRAFT
+        if (step === 2 && !propertyId) {
+            try {
+                setLoading(true);
+
+                const res = await createPropertyApi({
+                    ...formData,
+                    status: "DRAFT"
+                });
+
+                const id = res?.data?.id;
+                console.log("🔥 EXTRACTED ID==============:", id);
+
+                setPropertyId(id);
+
+                alert("Draft created. Now upload photos.");
+
+            } catch (err) {
+                console.error(err);
+                alert("Failed to create property");
+                return;
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        setStep(prev => prev + 1);
+    };
+
+    const handleFinish = async () => {
+        try {
+            await activatePropertyApi(propertyId);
+            alert("Property is now LIVE 🚀");
+        } catch (err) {
+            alert("Failed to activate");
+        }
+    };
 
     const renderStep = () => {
-        if (step === 1) return <PropertyDetails />;
-        if (step === 2) return <PriceDetails />;
-        if (step === 3) return <Photos />;
+        if (step === 1) {
+            return <PropertyDetails formData={formData} setFormData={setFormData} />;
+        }
+
+        if (step === 2) {
+            return <PriceDetails formData={formData} setFormData={setFormData} />;
+        }
+
+        if (step === 3) {
+            if (!propertyId) return <p>Error: Property not created</p>;
+
+            return <Photos propertyId={propertyId} />;
+        }
     };
 
     return (
@@ -21,53 +107,48 @@ function AddProperty() {
             <Navbar />
 
             <div className="max-w-6xl mx-auto px-4 pt-28 pb-16">
-
-                <h1 className="text-2xl font-semibold mb-6">
-                    Post Your Land
+                <h1 className="text-2xl font-semibold mb-2">
+                    List Your Land Near Tadoba
                 </h1>
 
-                <div className="grid grid-cols-4 gap-8">
+                <p className="text-gray-500 mb-6">
+                    Step {step} of 3
+                </p>
 
-                    {/* LEFT STEPPER */}
+                <div className="grid grid-cols-4 gap-8">
                     <AddPropertyStepper step={step} />
 
-                    {/* FORM AREA */}
                     <div className="col-span-3 bg-white border rounded-lg p-6">
-
                         {renderStep()}
 
                         <div className="flex justify-between mt-6">
                             {step > 1 && (
-                                <button
-                                    onClick={() => setStep(step - 1)}
-                                    className="px-4 py-2 border rounded"
-                                >
+                                <button onClick={() => setStep(step - 1)} className="px-4 py-2 border rounded">
                                     Back
                                 </button>
                             )}
 
                             {step < 3 && (
                                 <button
-                                    onClick={() => setStep(step + 1)}
+                                    onClick={handleNext}
+                                    disabled={loading}
                                     className="px-6 py-2 bg-green-700 text-white rounded"
                                 >
-                                    Continue
+                                    {loading ? "Creating..." : "Continue"}
                                 </button>
                             )}
 
                             {step === 3 && (
                                 <button
+                                    onClick={handleFinish}
                                     className="px-6 py-2 bg-green-700 text-white rounded"
                                 >
-                                    Submit Property
+                                    Publish Property
                                 </button>
                             )}
                         </div>
-
                     </div>
-
                 </div>
-
             </div>
 
             <Footer />

@@ -1,8 +1,43 @@
+import { loginApi } from "../api/authApi";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 
 function Login() {
+
+    const [phone, setPhone] = useState("");
+    const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    const navigate = useNavigate();
+
+    const handleLogin = async () => {
+        try {
+            if (!phone || !password) {
+                alert("Please enter mobile number and password");
+                return;
+            }
+
+            setLoading(true);
+
+            const res = await loginApi({
+                phone,
+                password
+            });
+
+            // Save token
+            localStorage.setItem("token", res.token);
+
+            // Redirect (adjust later)
+            navigate("/");
+
+        } catch (err) {
+            alert(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const leftSlides = [
         "Discover Land Opportunities Around Tadoba",
@@ -100,6 +135,8 @@ function Login() {
                             <input
                                 type="tel"
                                 placeholder="Mobile Number"
+                                value={phone}
+                                onChange={(e) => setPhone(e.target.value)}
                                 className="w-full px-3 py-2 outline-none"
                             />
                         </div>
@@ -107,11 +144,17 @@ function Login() {
                         <input
                             type="password"
                             placeholder="Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                             className="w-full border rounded px-3 py-2"
                         />
 
-                        <button className="w-full bg-green-700 text-white py-2 rounded">
-                            Login
+                        <button
+                            onClick={handleLogin}
+                            disabled={loading}
+                            className="w-full bg-green-700 text-white py-2 rounded disabled:opacity-50"
+                        >
+                            {loading ? "Logging in..." : "Login"}
                         </button>
 
                     </div>

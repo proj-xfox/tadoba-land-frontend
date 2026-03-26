@@ -1,8 +1,9 @@
+// src/components/property/AddPropertyStepper.jsx
 function AddPropertyStepper({ step }) {
 
     const steps = [
         "Property Details",
-        "Price Details",
+        "Price & Contact",
         "Photos"
     ];
 
@@ -13,17 +14,30 @@ function AddPropertyStepper({ step }) {
                 Post your property
             </h3>
 
-            {steps.map((s, i) => (
-                <div
-                    key={i}
-                    className={`py-2 ${step === i + 1
+            {steps.map((s, i) => {
+
+                const stepNumber = i + 1;
+
+                return (
+                    <div
+                        key={i}
+                        className={`py-2 flex items-center gap-2 ${step === stepNumber
                             ? "font-semibold text-green-700"
                             : "text-gray-500"
-                        }`}
-                >
-                    {i + 1}. {s}
-                </div>
-            ))}
+                            }`}
+                    >
+                        {/* Step indicator circle */}
+                        <div className={`w-6 h-6 flex items-center justify-center rounded-full text-xs ${step === stepNumber
+                            ? "bg-green-700 text-white"
+                            : "bg-gray-200"
+                            }`}>
+                            {stepNumber}
+                        </div>
+
+                        {s}
+                    </div>
+                );
+            })}
 
         </div>
     );

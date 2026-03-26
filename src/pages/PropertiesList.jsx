@@ -1,119 +1,53 @@
 // src/pages/PropertiesList.jsx
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import PropertyCardList from "../components/property/PropertyCardList";
 import SafariGates from "../components/home/SafariGates";
+import {
+    getOwnerPropertiesApi,
+    getAgentPropertiesApi
+} from "../api/propertyApi";
 
 function PropertiesList() {
+    const [properties, setProperties] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const { type } = useParams();
 
-    const properties = [
-        {
-            id: 1,
-            title: "5 Acre Resort Land",
-            village: "Moharli",
-            price: "₹25,00,000",
-            area: "5 Acres",
-            type: "Sale",
-            image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef",
-            listedBy: "owner"
-        },
-        {
-            id: 2,
-            title: "3 Acre Farm Land",
-            village: "Kolara",
-            price: "₹15,00,000",
-            area: "3 Acres",
-            type: "Lease",
-            image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
-            listedBy: "agent"
-        },
-        {
-            id: 3,
-            title: "10 Acre Eco Resort Land",
-            village: "Chimur",
-            price: "₹60,00,000",
-            area: "10 Acres",
-            type: "Sale",
-            image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e",
-            listedBy: "owner"
-        },
-        {
-            id: 4,
-            title: "5 Acre Resort Land",
-            village: "Moharli",
-            price: "₹25,00,000",
-            area: "5 Acres",
-            type: "Sale",
-            image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef",
-            listedBy: "owner"
-        },
-        {
-            id: 5,
-            title: "3 Acre Farm Land",
-            village: "Kolara",
-            price: "₹15,00,000",
-            area: "3 Acres",
-            type: "Lease",
-            image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
-            listedBy: "agent"
-        },
-        {
-            id: 6,
-            title: "3 Acre Farm Land",
-            village: "Kolara",
-            price: "₹15,00,000",
-            area: "3 Acres",
-            type: "Lease",
-            image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
-            listedBy: "agent"
-        },
-        {
-            id: 7,
-            title: "3 Acre Farm Land",
-            village: "Kolara",
-            price: "₹15,00,000",
-            area: "3 Acres",
-            type: "Lease",
-            image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
-            listedBy: "agent"
-        },
-        {
-            id: 8,
-            title: "3 Acre Farm Land",
-            village: "Kolara",
-            price: "₹15,00,000",
-            area: "3 Acres",
-            type: "Lease",
-            image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
-            listedBy: "agent"
-        },
-        {
-            id: 9,
-            title: "3 Acre Farm Land",
-            village: "Kolara",
-            price: "₹15,00,000",
-            area: "3 Acres",
-            type: "Lease",
-            image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
-            listedBy: "agent"
-        },
-        {
-            id: 10,
-            title: "10 Acre Eco Resort Land",
-            village: "Chimur",
-            price: "₹60,00,000",
-            area: "10 Acres",
-            type: "Sale",
-            image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e",
-            listedBy: "owner"
-        }
-    ];
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                let res;
 
-    const filtered = properties.filter(p => p.listedBy === type);
+                if (type === "owner") {
+                    res = await getOwnerPropertiesApi();
+                } else {
+                    res = await getAgentPropertiesApi();
+                }
+
+                setProperties(res.data || []);
+
+            } catch (err) {
+                console.error("Fetch error:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [type]);
+
+    const formatted = (properties || []).map(p => ({
+        ...p,
+        village: p.gate,
+        price: `₹ ${p.price?.toLocaleString()}`,
+        area: `${p.area || ""} ${p.areaUnit || ""}`,
+        image: p.image?.thumbnail || "/placeholder.jpg",
+        listedBy: type   // "owner" or "agent"
+    }));
 
     return (
         <>
@@ -134,7 +68,7 @@ function PropertiesList() {
                     <div className="lg:col-span-3">
 
                         <div className="space-y-4">
-                            {filtered.map((property) => (
+                            {formatted.map((property) => (
                                 <PropertyCardList
                                     key={property.id}
                                     property={property}
