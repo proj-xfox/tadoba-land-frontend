@@ -20,7 +20,7 @@ function PropertyDetails({ formData, setFormData }) {
 
                 <input
                     type="text"
-                    placeholder="Property Title"
+                    placeholder="Property Title like: 5 Acre Farm near Moharli Gate for sale"
                     value={formData.title}
                     onChange={(e) => handleChange("title", e.target.value)}
                     className="w-full border rounded px-3 py-2"
@@ -34,7 +34,7 @@ function PropertyDetails({ formData, setFormData }) {
                     className="w-full border rounded px-3 py-2"
                 />
 
-                <select
+                {/*  <select
                     value={formData.city}
                     onChange={(e) => handleChange("city", e.target.value)}
                     className="w-full border rounded px-3 py-2"
@@ -42,7 +42,7 @@ function PropertyDetails({ formData, setFormData }) {
                     <option value="">Select City</option>
                     <option value="CHANDRAPUR">Chandrapur</option>
                     <option value="NAGPUR">Nagpur</option>
-                </select>
+                </select> */}
 
                 <select
                     value={formData.gate}
@@ -91,7 +91,7 @@ function PropertyDetails({ formData, setFormData }) {
                 </div>
 
                 <textarea
-                    placeholder="Description (optional)"
+                    placeholder="Description Like: This is a 5 acre farm located near Moharli gate. Peferct for Resort develpoment."
                     value={formData.description}
                     onChange={(e) => handleChange("description", e.target.value)}
                     className="w-full border rounded px-3 py-2"

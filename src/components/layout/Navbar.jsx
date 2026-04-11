@@ -7,16 +7,21 @@ import SearchBar from "../search/SearchBar";
 function Navbar({ onSearch }) {
 
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [userRole, setRole] = useState(null);
+
     const navigate = useNavigate();
 
     useEffect(() => {
         const token = localStorage.getItem("token");
+        const role = localStorage.getItem("role");
         setIsLoggedIn(!!token);
+        setRole(role);
     }, []);
 
     const handleLogout = () => {
         localStorage.clear();
         setIsLoggedIn(false);
+        setRole(false);
         navigate("/");
     };
 
@@ -46,6 +51,18 @@ function Navbar({ onSearch }) {
                     <Link to="/add-property" className="text-gray-700 hover:text-green-700">
                         List Your Land
                     </Link>
+
+                    {userRole === "AGENT" && (
+                        <Link to="/dashboard" className="text-gray-700 hover:text-green-700">
+                            Dashboard
+                        </Link>
+                    )}
+
+                    {userRole === "ADMIN" && (
+                        <Link to="/admin" className="text-gray-700 hover:text-green-700">
+                            Admin Panel
+                        </Link>
+                    )}
 
                     {!isLoggedIn ? (
                         <>

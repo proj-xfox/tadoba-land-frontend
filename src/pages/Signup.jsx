@@ -1,3 +1,4 @@
+//src/pages/Signup.jsx
 import { signupApi } from "../api/authApi";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -89,8 +90,8 @@ function Signup() {
                         <button
                             onClick={() => setRole("buyer")}
                             className={`flex-1 py-2 text-sm font-medium ${role === "buyer"
-                                    ? "bg-green-700 text-white"
-                                    : "bg-white text-gray-600"
+                                ? "bg-green-700 text-white"
+                                : "bg-white text-gray-600"
                                 }`}
                         >
                             Buyer
@@ -102,8 +103,8 @@ function Signup() {
                                 setSellerType("OWNER"); // default
                             }}
                             className={`flex-1 py-2 text-sm font-medium ${role === "seller"
-                                    ? "bg-green-700 text-white"
-                                    : "bg-white text-gray-600"
+                                ? "bg-green-700 text-white"
+                                : "bg-white text-gray-600"
                                 }`}
                         >
                             Seller

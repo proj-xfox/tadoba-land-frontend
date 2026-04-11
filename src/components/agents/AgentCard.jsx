@@ -1,9 +1,56 @@
 // src/components/agents/AgentCard.jsx
 
-import { Link } from "react-router-dom";
 import { Phone } from "lucide-react";
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import LeadCaptureModal from "../leads/LeadCaptureModal.jsx";
+import { createLeadApi } from "../../api/leadApi";
 
 function AgentCard({ agent }) {
+
+    const [showModal, setShowModal] = useState(false);
+    const navigate = useNavigate();
+
+    const handleShowContact = async () => {
+        const token = localStorage.getItem("token");
+        const leadUserData = localStorage.getItem("leadUser");
+
+        // Case 1: Logged in
+        if (token) {
+            try {
+                await createLeadApi({
+                    agentId: agent.id
+                });
+
+                navigate(`/agent/${agent.slug}`);
+            } catch (err) {
+                console.error(err);
+            }
+            return;
+        }
+
+        // Case 2: Existing guest
+        if (leadUserData) {
+            const user = JSON.parse(leadUserData);
+
+            try {
+                await createLeadApi({
+                    ...user,
+                    agentId: agent.id   // 🔥 CHANGE HERE
+                });
+
+                navigate(`/agent/${agent.slug}`);
+            } catch (err) {
+                alert("Something went wrong");
+            }
+
+            return;
+        }
+
+        // Case 3: New guest
+        setShowModal(true);
+    };
+
     return (
         <div className="min-w-[255px] bg-gray-50 border border-gray-200 rounded-xl p-4 hover:shadow-md transition">
 
@@ -58,13 +105,23 @@ function AgentCard({ agent }) {
             </div>
 
             {/* CTA */}
-            <button className="w-full border border-green-400 text-green-600 rounded-lg py-1 text-sm font-medium flex items-center justify-center gap-2 hover:bg-green-100 transition">
-
+            <button
+                onClick={handleShowContact}
+                className="w-full border border-green-400 text-green-600 rounded-lg py-1 text-sm font-medium flex items-center justify-center gap-2 hover:bg-green-100 transition"
+            >
                 <Phone size={16} />
-
                 Show Contact
-
             </button>
+
+            <LeadCaptureModal
+                isOpen={showModal}
+                onClose={() => setShowModal(false)}
+                agentId={agent.id}   // 👈 pass agentId
+                onSuccess={() => {
+                    setShowModal(false);
+                    navigate(`/agent/${agent.slug}`);
+                }}
+            />
 
         </div>
     );

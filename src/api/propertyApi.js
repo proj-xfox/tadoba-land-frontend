@@ -27,3 +27,12 @@ export const getOwnerPropertiesApi = () => {
 export const getAgentPropertiesApi = () => {
     return fetchClient.get("/api/properties/agent");
 };
+
+export const getPropertyByIdApi = (id) => {
+    return fetchClient.get(`/api/properties/${id}`);
+};
+
+export const getPropertiesApi = (params) => {
+    return fetchClient.get("/api/properties", { params });
+};
+

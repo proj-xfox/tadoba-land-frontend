@@ -64,7 +64,6 @@ function Home() {
         try {
             const res = await getTopAgentsApi();
             console.log("Top agents fetched:=================", res.data);
-
             setAgents(res.data);
         } catch (err) {
             console.error("Agent fetch error:", err);
@@ -104,67 +103,6 @@ function Home() {
         setSearchQuery(query.toLowerCase());
     };
 
-    const topAgents = [
-        {
-            id: 1,
-            name: "Rajesh Wankhede",
-            location: "Moharli",
-            listings: 12,
-            experience: 10, locations: ["Chimur", "Adegaon"],
-            avatar: "https://i.pravatar.cc/100?img=3",
-        },
-        {
-            id: 2,
-            name: "Prakash Chavan",
-            location: "Kolara",
-            listings: 8, experience: 10, locations: ["Chimur", "Adegaon"],
-            avatar: "https://i.pravatar.cc/100?img=5",
-        },
-        {
-            id: 3,
-            name: "Mahesh Bansod",
-            location: "Adegaon",
-            listings: 15, experience: 10, locations: ["Chimur", "Adegaon"],
-            avatar: "https://i.pravatar.cc/100?img=7",
-        },
-        {
-            id: 4,
-            name: "Nitin Bhoyar",
-            location: "Chimur", experience: 10,
-            listings: 6, locations: ["Chimur", "Adegaon"],
-            avatar: "https://i.pravatar.cc/100?img=8",
-        },
-
-        {
-            id: 5,
-            name: "Rajesh Tevar",
-            location: "Adegaon", experience: 10,
-            listings: 15, locations: ["Chimur", "Adegaon"],
-            avatar: "https://i.pravatar.cc/100?img=7",
-        },
-        {
-            id: 6,
-            name: "Ramesh Kale",
-            location: "Chimur", experience: 10,
-            listings: 6, locations: ["Chimur", "Adegaon"],
-            avatar: "https://i.pravatar.cc/100?img=8",
-        },
-        {
-            id: 7,
-            name: "Sagar Mundada",
-            location: "Adegaon", experience: 10,
-            listings: 15, locations: ["Chimur", "Adegaon"],
-            avatar: "https://i.pravatar.cc/100?img=7",
-        },
-        {
-            id: 8,
-            name: "Kishr Desai",
-            location: "Chimur", experience: 10,
-            listings: 6,
-            locations: ["Chimur", "Adegaon"],
-            avatar: "https://i.pravatar.cc/100?img=8",
-        },
-    ];
 
     const properties = [
         {

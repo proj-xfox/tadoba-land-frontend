@@ -87,9 +87,9 @@ function PropertyCardList({ property }) {
                             View Details
                         </Link>
 
-                        <button className="border border-green-700 text-green-700 text-sm py-1.5 rounded hover:bg-green-50">
+                        {/* <button className="border border-green-700 text-green-700 text-sm py-1.5 rounded hover:bg-green-50">
                             Contact Owner
-                        </button>
+                        </button> */}
 
                     </div>
 

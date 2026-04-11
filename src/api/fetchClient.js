@@ -14,10 +14,23 @@ function getToken() {
 // -----------------------------------------
 // Core request handler
 // -----------------------------------------
-async function request(endpoint, { method = "GET", headers = {}, body } = {}) {
+async function request(
+    endpoint,
+    { method = "GET", headers = {}, body, params } = {}
+) {
     const token = getToken();
 
     const isFormData = body instanceof FormData;
+
+    // -----------------------------------------
+    // Build URL with query params (🔥 FIX)
+    // -----------------------------------------
+    let url = `${API_BASE_URL}${endpoint}`;
+
+    if (method === "GET" && params && Object.keys(params).length > 0) {
+        const query = new URLSearchParams(params).toString();
+        url += `?${query}`;
+    }
 
     const config = {
         method,
@@ -37,8 +50,8 @@ async function request(endpoint, { method = "GET", headers = {}, body } = {}) {
         config.headers["Content-Type"] = "application/json";
     }
 
-    const url = `${API_BASE_URL}${endpoint}`;
     console.log(`➡ ${method} ${url}`, body || "");
+
     let payload = {};
     let res;
 
@@ -53,15 +66,12 @@ async function request(endpoint, { method = "GET", headers = {}, body } = {}) {
             window.location.href = "/login";
             return;
         }
-
     } catch (err) {
         console.error("Fetch error:", err);
         console.error("❌ NON-JSON RESPONSE RECEIVED");
         console.error("👉 URL:", url);
-        console.error("👉 STATUS:", res.status);
-        console.error("👉 RAW RESPONSE:");
-        console.error(text); // 🔥 MOST IMPORTANT LOG
-        console.log(text);
+        console.error("👉 STATUS:", res?.status);
+        console.error("👉 RAW RESPONSE:", payload);
         throw new Error("Network error");
     }
 
@@ -77,11 +87,20 @@ async function request(endpoint, { method = "GET", headers = {}, body } = {}) {
 // Public API wrapper methods
 // -----------------------------------------
 const fetchClient = {
-    get: (url, options) => request(url, { ...options, method: "GET" }),
-    post: (url, body, options) => request(url, { ...options, method: "POST", body }),
-    put: (url, body, options) => request(url, { ...options, method: "PUT", body }),
-    patch: (url, body, options) => request(url, { ...options, method: "PATCH", body }),
-    delete: (url, options) => request(url, { ...options, method: "DELETE" }),
+    get: (url, options = {}) =>
+        request(url, { ...options, method: "GET" }),
+
+    post: (url, body, options = {}) =>
+        request(url, { ...options, method: "POST", body }),
+
+    put: (url, body, options = {}) =>
+        request(url, { ...options, method: "PUT", body }),
+
+    patch: (url, body, options = {}) =>
+        request(url, { ...options, method: "PATCH", body }),
+
+    delete: (url, options = {}) =>
+        request(url, { ...options, method: "DELETE" }),
 };
 
 export default fetchClient;

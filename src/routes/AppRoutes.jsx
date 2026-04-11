@@ -16,6 +16,7 @@ import ExploreTadoba from "../pages/ExploreTadoba";
 import ScrollToTop from "../components/helper/ScrollToTop";
 import InsightArticle from "../pages/InsightArticle";
 import Insights from "../pages/Insights";
+import Dashboard from "../pages/Dashboard";
 
 function AppRoutes() {
     return (
@@ -47,6 +48,9 @@ function AppRoutes() {
                 <Route path="/explore-tadoba" element={<ExploreTadoba />} />
                 <Route path="/insights/:slug" element={<InsightArticle />} />
                 <Route path="/insights" element={<Insights />} />
+
+                <Route path="/dashboard" element={<Dashboard />} />
+
             </Routes>
         </BrowserRouter>
     );

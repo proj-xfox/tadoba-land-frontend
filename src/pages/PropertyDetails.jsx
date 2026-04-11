@@ -3,221 +3,147 @@ import { useParams } from "react-router-dom";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import PropertyCarousel from "../components/property/SimilarPropertyCarousel";
+import { useEffect, useState } from "react";
+import { unlockContactApi } from "../api/leadApi";
+import LoginSignupModal from "../components/auth/LoginSignupModal.jsx";
+import {
+    getPropertyByIdApi,
+    getPropertiesApi
+} from "../api/propertyApi";
+
 
 function PropertyDetails() {
 
     const { id } = useParams();
+    const MASKED_PHONE = "+91 XXX-XXX-1234";
 
-    const properties = [
-        {
-            id: 1,
-            title: "5 Acre Resort Land",
-            village: "Moharli",
-            price: "₹25,00,000",
-            area: "5 Acres",
-            type: "Sale",
-            image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef",
-            listedBy: "owner"
-        },
-        {
-            id: 2,
-            title: "3 Acre Farm Land",
-            village: "Kolara",
-            price: "₹15,00,000",
-            area: "3 Acres",
-            type: "Lease",
-            image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
-            listedBy: "agent"
-        },
-        {
-            id: 3,
-            title: "10 Acre Eco Resort Land",
-            village: "Chimur",
-            price: "₹60,00,000",
-            area: "10 Acres",
-            type: "Sale",
-            image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e",
-            listedBy: "owner"
-        },
-        {
-            id: 4,
-            title: "7 Acre Jungle Edge Land",
-            village: "Kolara",
-            price: "₹40,00,000",
-            area: "7 Acres",
-            type: "Sale",
-            image: "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429",
-            listedBy: "agent"
-        },
-        {
-            id: 5,
-            title: "5 Acre Resort Land",
-            village: "Moharli",
-            price: "₹25,00,000",
-            area: "5 Acres",
-            type: "Sale",
-            image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef",
-            listedBy: "owner"
-        },
-        {
-            id: 6,
-            title: "3 Acre Farm Land",
-            village: "Kolara",
-            price: "₹15,00,000",
-            area: "3 Acres",
-            type: "Lease",
-            image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
-            listedBy: "agent"
-        },
-        {
-            id: 7,
-            title: "10 Acre Eco Resort Land",
-            village: "Chimur",
-            price: "₹60,00,000",
-            area: "10 Acres",
-            type: "Sale",
-            image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e",
-            listedBy: "owner"
-        },
-        {
-            id: 8,
-            title: "7 Acre Jungle Edge Land",
-            village: "Kolara",
-            price: "₹40,00,000",
-            area: "7 Acres",
-            type: "Sale",
-            image: "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429",
-            listedBy: "agent"
-        },
-        {
-            id: 9,
-            title: "10 Acre Eco Resort Land",
-            village: "Chimur",
-            price: "₹60,00,000",
-            area: "10 Acres",
-            type: "Sale",
-            image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e",
-            listedBy: "owner"
-        },
-        {
-            id: 10,
-            title: "10 Acre Eco Resort Land",
-            village: "Chimur",
-            price: "₹60,00,000",
-            area: "10 Acres",
-            type: "Sale",
-            image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e",
-            listedBy: "owner"
-        },
-        {
-            id: 11,
-            title: "10 Acre Eco Resort Land",
-            village: "Chimur",
-            price: "₹60,00,000",
-            area: "10 Acres",
-            type: "Sale",
-            image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e",
-            listedBy: "owner"
-        },
-        {
-            id: 12,
-            title: "7 Acre Jungle Edge Land",
-            village: "Kolara",
-            price: "₹40,00,000",
-            area: "7 Acres",
-            type: "Sale",
-            image: "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429",
-            listedBy: "agent"
-        },
-        {
-            id: 13,
-            title: "7 Acre Jungle Edge Land",
-            village: "Kolara",
-            price: "₹40,00,000",
-            area: "7 Acres",
-            type: "Sale",
-            image: "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429",
-            listedBy: "agent"
-        },
-        {
-            id: 14,
-            title: "7 Acre Jungle Edge Land",
-            village: "Kolara",
-            price: "₹40,00,000",
-            area: "7 Acres",
-            type: "Sale",
-            image: "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429",
-            listedBy: "agent"
-        },
-        {
-            id: 15,
-            title: "7 Acre Jungle Edge Land",
-            village: "Kolara",
-            price: "₹40,00,000",
-            area: "7 Acres",
-            type: "Sale",
-            image: "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429",
-            listedBy: "agent"
+    const [property, setProperty] = useState(null);
+    const [similarProperties, setSimilarProperties] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [phone, setPhone] = useState(MASKED_PHONE);
+    const [contactName, setContactName] = useState("");
+    const [loadingPhone, setLoadingPhone] = useState(false);
+    const [showAuthModal, setShowAuthModal] = useState(false);
+
+    // Fetch Property Details
+    useEffect(() => {
+        const fetchProperty = async () => {
+            try {
+                const res = await getPropertyByIdApi(id);
+                setProperty(res.data);
+            } catch (err) {
+                console.error(" Property fetch error", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProperty();
+    }, [id]);
+
+    useEffect(() => {
+        setPhone(MASKED_PHONE);
+        setContactName("");
+    }, [id]);
+
+    //  Fetch Similar Properties
+    useEffect(() => {
+        if (!property) return;
+
+        const fetchSimilar = async () => {
+            try {
+                console.log("🔍 Fetching similar properties for village===========:", property.village);
+                const res = await getPropertiesApi({
+                    gate: property.village // ⚠️ ensure backend uses city → village mapping
+                });
+
+                const filtered = res.data
+                    .filter(p => p.id !== property.id)
+                    .map(p => ({
+                        ...p,
+                        image: p.images?.[0]?.optimizedUrl || null
+                    }));
+
+                setSimilarProperties(filtered.slice(0, 10));
+            } catch (err) {
+                console.error(" Similar fetch error", err);
+            }
+        };
+
+        fetchSimilar();
+    }, [property]);
+
+
+    const handleShowPhone = async () => {
+        const token = localStorage.getItem("token");
+
+        //  If not logged in → open modal
+        if (!token) {
+            setShowAuthModal(true);
+            return;
         }
 
+        try {
+            if (phone !== MASKED_PHONE) return;
 
-    ];
+            setLoadingPhone(true);
 
-    const property = {
-        title: "1 Acre Land near Kolara Gate",
-        price: "₹12,00,000",
-        village: "Kolara",
-        distance: "5 km from Tadoba Gate",
-        area: "1 Acre",
-        description:
-            "This land parcel is located close to Kolara gate of Tadoba Tiger Reserve. Ideal for resort or tourism investment.",
+            const res = await unlockContactApi(property.id);
 
-        images: [
-            "https://images.unsplash.com/photo-1500382017468-9049fed747ef",
-            "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
-            "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
-        ],
+            setPhone(res.data.phone);
+            setContactName(res.data.name);
+
+        } catch (err) {
+            console.error(err);
+            alert("Something went wrong");
+        } finally {
+            setLoadingPhone(false);
+        }
     };
+
+    //  Loading / Error States
+    if (loading) return <div className="p-10">Loading...</div>;
+    if (!property) return <div className="p-10">Property not found</div>;
+
 
     return (
         <>
             <Navbar />
 
-            <div className="w-full bg-gray-100 mx-auto px-20 mt-10 py-10">
+            <div className="w-full bg-gray-100 mx-auto px-4 md:px-10 lg:px-20 mt-10 py-10">
 
                 {/* MAIN GRID */}
-                <div className="grid lg:grid-cols-3 gap-3 ">
+                <div className="grid lg:grid-cols-3 gap-6">
 
                     {/* LEFT PANEL */}
                     <div className="lg:col-span-2">
 
-                        {/* IMAGE */}
+                        {/* MAIN IMAGE */}
                         <img
-                            src={property.images[0]}
-                            className="w-full h-96 object-cover rounded-lg"
-                            alt=""
+                            src={property.images?.[0] || "/fallback.jpg"}
+                            className="w-full h-80 md:h-96 object-cover rounded-lg"
+                            alt="property"
                         />
 
                         {/* THUMBNAILS */}
                         <div className="grid grid-cols-3 gap-2 mt-3">
-                            {property.images.map((img, i) => (
+                            {property.images?.map((img, i) => (
                                 <img
                                     key={i}
                                     src={img}
-                                    className="h-24 w-full object-cover rounded"
+                                    className="h-20 md:h-24 w-full object-cover rounded"
+                                    alt=""
                                 />
                             ))}
                         </div>
 
                         {/* INVESTMENT SNAPSHOT */}
                         <div className="mt-4 border rounded-lg p-6 bg-green-50">
-
                             <h2 className="text-xl font-semibold mb-4">
                                 Investment Snapshot
                             </h2>
 
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-
                                 <div>
                                     <p className="text-gray-500">Tourism Potential</p>
                                     <p className="font-semibold">High</p>
@@ -237,48 +163,11 @@ function PropertyDetails() {
                                     <p className="text-gray-500">Nearby Resorts</p>
                                     <p className="font-semibold">4 within 3 km</p>
                                 </div>
-
                             </div>
-
-                        </div>
-
-
-                        {/* LAND DETAILS */}
-                        <div className="mt-4 border rounded-lg p-6 shadow-sm bg-white">
-
-                            <h2 className="text-xl font-semibold mb-4">
-                                Land Details
-                            </h2>
-
-                            <div className="grid grid-cols-2 md:grid-cols-2 gap-y-3 text-gray-700">
-
-                                <div className="flex justify-between border-b pb-2">
-                                    <span className="text-gray-500">Land Type</span>
-                                    <span className="font-medium">Agricultural</span>
-                                </div>
-
-                                <div className="flex justify-between border-b pb-2">
-                                    <span className="text-gray-500">Ownership</span>
-                                    <span className="font-medium">Clear Title</span>
-                                </div>
-
-                                <div className="flex justify-between border-b pb-2">
-                                    <span className="text-gray-500">Road Access</span>
-                                    <span className="font-medium">Yes</span>
-                                </div>
-
-                                <div className="flex justify-between border-b pb-2">
-                                    <span className="text-gray-500">Electricity</span>
-                                    <span className="font-medium">Nearby</span>
-                                </div>
-
-                            </div>
-
                         </div>
 
                         {/* DESCRIPTION */}
                         <div className="mt-4 border rounded-lg p-6 shadow-sm bg-white">
-
                             <h2 className="text-xl font-semibold mb-4">
                                 Description
                             </h2>
@@ -286,12 +175,10 @@ function PropertyDetails() {
                             <p className="text-gray-700 leading-relaxed">
                                 {property.description}
                             </p>
-
                         </div>
 
                         {/* LOCATION */}
                         <div className="mt-4 border rounded-lg p-6 shadow-sm bg-white">
-
                             <h2 className="text-xl font-semibold mb-4">
                                 Location & Nearby Safari Gates
                             </h2>
@@ -332,16 +219,13 @@ function PropertyDetails() {
                                     </div>
 
                                 </div>
-
                             </div>
-
                         </div>
 
                     </div>
 
-                    {/* RIGHT STICKY CARD */}
+                    {/* RIGHT PANEL */}
                     <div>
-
                         <div className="sticky top-24 border rounded-lg p-6 shadow-sm bg-white">
 
                             <h1 className="text-xl font-bold text-gray-800">
@@ -366,38 +250,57 @@ function PropertyDetails() {
 
                             {/* CONTACT */}
                             <div className="mt-6 border-t pt-4">
-
                                 <h3 className="font-semibold mb-3">
                                     Contact Owner
                                 </h3>
-
-                                <button className="w-full bg-green-700 text-white py-2 rounded mb-2 hover:bg-green-800">
-                                    Show Phone Number
+                                <h1 className="font-semibold mb-3">
+                                    Name: {contactName}
+                                </h1>
+                                <button
+                                    onClick={handleShowPhone}
+                                    disabled={loadingPhone}
+                                    className="w-full bg-green-700 text-white py-2 rounded mb-2 hover:bg-green-800"
+                                >
+                                    {loadingPhone ? "Fetching..." : phone}
                                 </button>
 
                                 <button className="w-full border border-green-700 text-green-700 py-2 rounded hover:bg-green-50">
                                     Send Enquiry
                                 </button>
-
                             </div>
 
                         </div>
-
                     </div>
 
                 </div>
 
+                {/* SIMILAR PROPERTIES */}
+                <div className="mt-6 border rounded-lg p-6 shadow-sm bg-white">
 
-                <div className="mt-4 border rounded-lg p-6 shadow-sm bg-white">
-                    <PropertyCarousel
-                        title="Similar Lands/Properties in same area"
-                        properties={properties}
-                    />
+                    {similarProperties.length === 0 ? (
+                        <div className="text-gray-500 text-center py-4">
+                            No similar properties found
+                        </div>
+                    ) : (
+                        <PropertyCarousel
+                            title="Similar Lands/Properties in same area"
+                            properties={similarProperties}
+                        />
+                    )}
+
                 </div>
-
-            </div>
-
+            </div >
             <Footer />
+
+            <LoginSignupModal
+                isOpen={showAuthModal}
+                onClose={() => setShowAuthModal(false)}
+                onSuccess={() => {
+                    setShowAuthModal(false);
+                    handleShowPhone();  // continue flow after login
+                }}
+            />
+
         </>
     );
 }

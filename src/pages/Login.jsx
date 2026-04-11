@@ -1,14 +1,18 @@
+// src/pages/Login.jsx
 import { loginApi } from "../api/authApi";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { ChevronRight, ChevronLeft } from "lucide-react";
+import { getMyAgentProfileApi, saveAgentProfileApi } from "../api/agentApi";
+import AgentProfileModal from "../components/agent/AgentProfileModal";
 
 function Login() {
 
     const [phone, setPhone] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
+    const [showProfileModal, setShowProfileModal] = useState(false);
 
     const navigate = useNavigate();
 
@@ -28,14 +32,30 @@ function Login() {
 
             // Save token
             localStorage.setItem("token", res.token);
+            localStorage.setItem("role", res.user.role);
 
-            // Redirect (adjust later)
-            navigate("/");
+            if (res.user.role === "AGENT") {
+                await checkAgentProfileAndShowModal();
+            } else {
+                navigate("/");
+            }
 
         } catch (err) {
             alert(err.message);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleSaveProfile = async (form) => {
+        try {
+            await saveAgentProfileApi(form);
+            setShowProfileModal(false);
+            alert("Profile completed! You'll get more enquiries 🚀");
+            navigate("/");
+        } catch (err) {
+            console.error(err);
+            alert("Failed to save profile");
         }
     };
 
@@ -63,6 +83,21 @@ function Login() {
 
         return () => clearInterval(interval);
     }, []);
+
+    const checkAgentProfileAndShowModal = async () => {
+        try {
+            const res = await getMyAgentProfileApi();
+
+            if (!res?.data) {
+                setShowProfileModal(true);
+            } else {
+                navigate("/"); // Profile exists, go to homepage
+            }
+        } catch (err) {
+            console.error("Profile check failed", err);
+            navigate("/");
+        }
+    };
 
     const properties = [1, 2, 3, 4];
 
@@ -220,6 +255,12 @@ function Login() {
 
             </div>
 
+            {/* ✅ BEST PLACE */}
+            <AgentProfileModal
+                isOpen={showProfileModal}
+                onClose={() => setShowProfileModal(false)}
+                onSave={handleSaveProfile}
+            />
         </div>
     );
 }

@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { createLeadApi } from "../../api/leadApi";
 
-function LeadCaptureModal({ isOpen, onClose, propertyId, onSuccess }) {
+function LeadCaptureModal({ isOpen, onClose, propertyId, agentId, onSuccess }) {
 
     const [name, setName] = useState("");
     const [phone, setPhone] = useState("");
@@ -24,7 +24,8 @@ function LeadCaptureModal({ isOpen, onClose, propertyId, onSuccess }) {
                 name,
                 phone,
                 email,
-                propertyId
+                propertyId,
+                agentId
             });
 
             localStorage.setItem("leadUser", JSON.stringify({
