@@ -1,11 +1,10 @@
-// src/pages/Login.jsx
 import { loginApi } from "../api/authApi";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import { getMyAgentProfileApi, saveAgentProfileApi } from "../api/agentApi";
 import AgentProfileModal from "../components/agent/AgentProfileModal";
+import { useAuth } from "../context/AuthContext"; // ✅ NEW
 
 function Login() {
 
@@ -15,6 +14,7 @@ function Login() {
     const [showProfileModal, setShowProfileModal] = useState(false);
 
     const navigate = useNavigate();
+    const { login } = useAuth(); // ✅ NEW
 
     const handleLogin = async () => {
         try {
@@ -30,9 +30,8 @@ function Login() {
                 password
             });
 
-            // Save token
-            localStorage.setItem("token", res.token);
-            localStorage.setItem("role", res.user.role);
+            // ✅ USE AUTH CONTEXT (IMPORTANT)
+            login(res.user, res.token);
 
             if (res.user.role === "AGENT") {
                 await checkAgentProfileAndShowModal();
@@ -56,6 +55,21 @@ function Login() {
         } catch (err) {
             console.error(err);
             alert("Failed to save profile");
+        }
+    };
+
+    const checkAgentProfileAndShowModal = async () => {
+        try {
+            const res = await getMyAgentProfileApi();
+
+            if (!res?.data) {
+                setShowProfileModal(true);
+            } else {
+                navigate("/");
+            }
+        } catch (err) {
+            console.error("Profile check failed", err);
+            navigate("/");
         }
     };
 
@@ -84,72 +98,42 @@ function Login() {
         return () => clearInterval(interval);
     }, []);
 
-    const checkAgentProfileAndShowModal = async () => {
-        try {
-            const res = await getMyAgentProfileApi();
-
-            if (!res?.data) {
-                setShowProfileModal(true);
-            } else {
-                navigate("/"); // Profile exists, go to homepage
-            }
-        } catch (err) {
-            console.error("Profile check failed", err);
-            navigate("/");
-        }
-    };
-
     const properties = [1, 2, 3, 4];
 
     return (
         <div className="min-h-screen grid grid-cols-1 md:grid-cols-3 relative">
 
             {/* LEFT AREA */}
-            <div className="hidden md:flex bg-gray-100 items-center justify-center  overflow-hidden">
+            <div className="hidden md:flex bg-gray-100 items-center justify-center overflow-hidden">
 
                 {!open ? (
-
                     <div
                         onClick={() => setOpen(true)}
-                        className="relative bg-green-800 text-white w-full h-full flex items-center justify-center text-center cursor-pointer overflow-hidden"
+                        className="relative bg-green-800 text-white w-full h-full flex items-center justify-center text-center cursor-pointer"
                     >
-
-                        {/* TEXT */}
                         <div className="px-10">
                             <h2 className="text-2xl font-semibold leading-relaxed">
                                 {leftSlides[leftIndex]}
                             </h2>
                         </div>
 
-                        {/* EDGE INDICATOR */}
-                        <div className="absolute right-0 top-1/2 -translate-y-1/2 bg-green-700 p-3 rounded-l-lg animate-arrow-right">
+                        <div className="absolute right-0 top-1/2 -translate-y-1/2 bg-green-700 p-3 rounded-l-lg">
                             <ChevronRight size={24} />
                         </div>
-
                     </div>
-
                 ) : (
-
                     <div className="grid grid-cols-1 gap-4 w-full">
-
                         {properties.map((p) => (
-                            <div
-                                key={p}
-                                className="bg-white rounded shadow p-3 hover:shadow-md transition"
-                            >
+                            <div key={p} className="bg-white rounded shadow p-3">
                                 <div className="h-24 bg-gray-300 mb-2 rounded"></div>
                                 <p className="text-sm font-semibold">
                                     Farm Land Near Moharli
                                 </p>
                             </div>
                         ))}
-
                     </div>
-
                 )}
-
             </div>
-
 
             {/* LOGIN */}
             <div className="flex items-center justify-center bg-gray-50 px-4">
@@ -196,10 +180,7 @@ function Login() {
 
                     <p className="text-sm text-center mt-6">
                         New here?{" "}
-                        <Link
-                            to="/signup"
-                            className="text-green-700 font-medium"
-                        >
+                        <Link to="/signup" className="text-green-700 font-medium">
                             Create an account
                         </Link>
                     </p>
@@ -208,54 +189,39 @@ function Login() {
 
             </div>
 
-
             {/* RIGHT AREA */}
-            <div className="hidden md:flex bg-gray-100 items-center justify-center  overflow-hidden">
+            <div className="hidden md:flex bg-gray-100 items-center justify-center overflow-hidden">
 
                 {!open ? (
-
                     <div
                         onClick={() => setOpen(true)}
-                        className="relative bg-gray-900 text-white w-full h-full flex items-center justify-center text-center cursor-pointer overflow-hidden"
+                        className="relative bg-gray-900 text-white w-full h-full flex items-center justify-center text-center cursor-pointer"
                     >
-
-                        {/* TEXT */}
                         <div className="px-10">
                             <h2 className="text-2xl font-semibold leading-relaxed">
                                 {rightSlides[rightIndex]}
                             </h2>
                         </div>
 
-                        {/* EDGE INDICATOR */}
-                        <div className="absolute left-0 top-1/2 -translate-y-1/2 bg-gray-800 p-3 rounded-r-lg animate-arrow-left">
+                        <div className="absolute left-0 top-1/2 -translate-y-1/2 bg-gray-800 p-3 rounded-r-lg">
                             <ChevronLeft size={24} />
                         </div>
-
                     </div>
-
                 ) : (
-
                     <div className="grid grid-cols-1 gap-4 w-full">
-
                         {properties.map((p) => (
-                            <div
-                                key={p}
-                                className="bg-white rounded shadow p-3 hover:shadow-md transition"
-                            >
+                            <div key={p} className="bg-white rounded shadow p-3">
                                 <div className="h-24 bg-gray-300 mb-2 rounded"></div>
                                 <p className="text-sm font-semibold">
                                     Resort Plot Near Tadoba
                                 </p>
                             </div>
                         ))}
-
                     </div>
-
                 )}
-
             </div>
 
-            {/* ✅ BEST PLACE */}
+            {/* AGENT PROFILE MODAL */}
             <AgentProfileModal
                 isOpen={showProfileModal}
                 onClose={() => setShowProfileModal(false)}

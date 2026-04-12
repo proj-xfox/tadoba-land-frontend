@@ -20,13 +20,23 @@ export const activatePropertyApi = (propertyId) => {
     return fetchClient.patch(`/api/properties/${propertyId}/activate`);
 };
 
-export const getOwnerPropertiesApi = () => {
+/* export const getOwnerPropertiesApi = () => {
     return fetchClient.get("/api/properties/owner");
 };
 
 export const getAgentPropertiesApi = () => {
     return fetchClient.get("/api/properties/agent");
+}; */
+
+
+export const getOwnerPropertiesApi = (params = {}) => {
+    return fetchClient.get("/api/properties/owner", { params });
 };
+
+export const getAgentPropertiesApi = (params = {}) => {
+    return fetchClient.get("/api/properties/agent", { params });
+};
+
 
 export const getPropertyByIdApi = (id) => {
     return fetchClient.get(`/api/properties/${id}`);

@@ -1,8 +1,11 @@
 // src/components/auth/LoginSignupModal.jsx
 import { useState } from "react";
 import { loginApi, signupApi } from "../../api/authApi";
+import { useAuth } from "../../context/AuthContext"; // ✅ NEW
 
 function LoginSignupModal({ isOpen, onClose, onSuccess }) {
+
+    const { login } = useAuth(); // ✅ NEW
 
     const [mode, setMode] = useState("login"); // login | signup
     const [name, setName] = useState("");
@@ -15,7 +18,7 @@ function LoginSignupModal({ isOpen, onClose, onSuccess }) {
 
     const handleSubmit = async () => {
         try {
-            // ✅ validation (same as pages)
+            // ✅ validation
             if (!phone || !password || (mode === "signup" && !name)) {
                 alert("Please fill all required fields");
                 return;
@@ -40,16 +43,15 @@ function LoginSignupModal({ isOpen, onClose, onSuccess }) {
                     name,
                     phone,
                     password,
-                    role: "BUYER" // default for modal users
+                    role: "BUYER"
                 });
             }
 
-            // ✅ store auth (same as login page)
-            localStorage.setItem("token", res.token);
-            localStorage.setItem("user", JSON.stringify(res.user));
-            localStorage.setItem("role", res.user.role);
+            // 🔥 IMPORTANT CHANGE → use context instead of localStorage
+            login(res.user, res.token);
 
             onSuccess(); // continue flow
+            onClose();   // optional but better UX
 
         } catch (err) {
             alert(err.message);
@@ -81,7 +83,7 @@ function LoginSignupModal({ isOpen, onClose, onSuccess }) {
                 {/* Form */}
                 <div className="space-y-3">
 
-                    {/* NAME (signup only) */}
+                    {/* NAME */}
                     {mode === "signup" && (
                         <input
                             type="text"
@@ -92,7 +94,7 @@ function LoginSignupModal({ isOpen, onClose, onSuccess }) {
                         />
                     )}
 
-                    {/* MOBILE (with +91 like login page) */}
+                    {/* MOBILE */}
                     <div className="flex border rounded overflow-hidden">
                         <span className="px-3 flex items-center bg-gray-100 text-sm">
                             +91
@@ -116,7 +118,7 @@ function LoginSignupModal({ isOpen, onClose, onSuccess }) {
                         className="w-full border px-3 py-2 rounded"
                     />
 
-                    {/* CONFIRM PASSWORD (signup only) */}
+                    {/* CONFIRM PASSWORD */}
                     {mode === "signup" && (
                         <input
                             type="password"

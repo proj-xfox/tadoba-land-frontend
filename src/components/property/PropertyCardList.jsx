@@ -55,8 +55,7 @@ function PropertyCardList({ property }) {
 
                     {/* DESCRIPTION */}
                     <p className="text-sm text-gray-500 mt-3 line-clamp-2">
-                        Ideal land parcel for tourism development near Tadoba forest zone.
-                        Good road access and growing investor demand.
+                        {property.description || "No description available."}
                     </p>
 
                 </div>

@@ -16,8 +16,14 @@ import LifeAroundTadoba from "../components/home/LifeAroundTadoba";
 import SafariGates from "../components/home/SafariGates";
 import LandInsights from "../components/home/LandInsights";
 import SellPropertyCTA from "../components/home/SellPropertyCTA";
+import { useSearchParams } from "react-router-dom";
 
 function Home() {
+
+    const [searchParams] = useSearchParams();
+    const gates = searchParams.get("gates")
+        ? searchParams.get("gates").split(",")
+        : [];
 
     const [filters, setFilters] = useState({
         type: "",
@@ -33,7 +39,9 @@ function Home() {
 
     const fetchOwnerListings = async () => {
         try {
-            const res = await getOwnerPropertiesApi();
+            const res = await getOwnerPropertiesApi(
+                gates.length ? { gates } : {}
+            );
             setOwnerProperties(res.data);
         } catch (err) {
             console.error("Owner fetch error:", err);
@@ -42,7 +50,9 @@ function Home() {
 
     const fetchAgentListings = async () => {
         try {
-            const res = await getAgentPropertiesApi();
+            const res = await getAgentPropertiesApi(
+                gates.length ? { gates } : {}
+            );
             setAgentProperties(res.data);
         } catch (err) {
             console.error("Agent fetch error:", err);
@@ -72,10 +82,13 @@ function Home() {
 
     useEffect(() => {
         fetchFeatured();
-        fetchOwnerListings();
-        fetchAgentListings();
         fetchAgents();
     }, []);
+
+    useEffect(() => {
+        fetchOwnerListings();
+        fetchAgentListings();
+    }, [searchParams.toString()]); // passing gate to filter the properties
 
     const formattedFeatured = featuredProperties.map(p => ({
         ...p,

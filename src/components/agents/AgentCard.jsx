@@ -10,8 +10,9 @@ function AgentCard({ agent }) {
 
     const [showModal, setShowModal] = useState(false);
     const navigate = useNavigate();
+    const [showContact, setShowContact] = useState(false);
 
-    const handleShowContact = async () => {
+    /* const handleShowContact = async () => {
         const token = localStorage.getItem("token");
         const leadUserData = localStorage.getItem("leadUser");
 
@@ -48,6 +49,46 @@ function AgentCard({ agent }) {
         }
 
         // Case 3: New guest
+        setShowModal(true);
+    }; */
+
+    const handleShowContact = async () => {
+        const token = localStorage.getItem("token");
+        const leadUserData = localStorage.getItem("leadUser");
+
+        // Logged-in
+        if (token) {
+            const storedUser = localStorage.getItem("user");
+            const user = JSON.parse(storedUser);
+
+            try {
+                await createLeadApi({ ...user, agentId: agent.id });
+                setShowContact(true); // ✅ show inline
+            } catch (err) {
+                console.error(err);
+            }
+            return;
+        }
+
+        // Existing guest
+        if (leadUserData) {
+            const user = JSON.parse(leadUserData);
+
+            try {
+                await createLeadApi({
+                    ...user,
+                    agentId: agent.id
+                });
+
+                setShowContact(true); // ✅ show inline
+            } catch (err) {
+                alert("Something went wrong");
+            }
+
+            return;
+        }
+
+        // New guest
         setShowModal(true);
     };
 
@@ -105,13 +146,19 @@ function AgentCard({ agent }) {
             </div>
 
             {/* CTA */}
-            <button
-                onClick={handleShowContact}
-                className="w-full border border-green-400 text-green-600 rounded-lg py-1 text-sm font-medium flex items-center justify-center gap-2 hover:bg-green-100 transition"
-            >
-                <Phone size={16} />
-                Show Contact
-            </button>
+            {showContact ? (
+                <div className="w-full bg-green-50 border border-green-200 rounded-lg py-2 text-sm text-center font-medium text-green-700">
+                    {agent.phone || "Contact Available"}
+                </div>
+            ) : (
+                <button
+                    onClick={handleShowContact}
+                    className="w-full border border-green-400 text-green-600 rounded-lg py-1 text-sm font-medium flex items-center justify-center gap-2 hover:bg-green-100 transition"
+                >
+                    <Phone size={16} />
+                    Show Contact
+                </button>
+            )}
 
             <LeadCaptureModal
                 isOpen={showModal}
@@ -119,7 +166,7 @@ function AgentCard({ agent }) {
                 agentId={agent.id}   // 👈 pass agentId
                 onSuccess={() => {
                     setShowModal(false);
-                    navigate(`/agent/${agent.slug}`);
+                    setShowContact(true); // ✅ unlock contact here
                 }}
             />
 

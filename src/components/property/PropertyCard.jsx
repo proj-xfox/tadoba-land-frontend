@@ -1,5 +1,3 @@
-// src/components/property/PropertyCard.jsx
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LeadCaptureModal from "../leads/LeadCaptureModal.jsx";
@@ -8,22 +6,19 @@ import { createLeadApi } from "../../api/leadApi";
 function PropertyCard({ property }) {
 
     const [showModal, setShowModal] = useState(false);
+    const [imgLoaded, setImgLoaded] = useState(false); // ✅ NEW
+
     const navigate = useNavigate();
 
     const handleViewDetails = async () => {
         const token = localStorage.getItem("token");
         const leadUserData = localStorage.getItem("leadUser");
 
-        console.log("PROPERTY============:", property);
-        console.log("PROPERTY ID ============:", property.id);
-
-        // Case 1: Logged-in user
         if (token) {
             navigate(`/property/${property.id}`);
             return;
         }
 
-        // Case 2: Guest user already identified
         if (leadUserData) {
             const user = JSON.parse(leadUserData);
 
@@ -41,19 +36,37 @@ function PropertyCard({ property }) {
             return;
         }
 
-        //  Case 3: New user → show modal
         setShowModal(true);
     };
+
+    // ✅ Safe image fallback
+    const imageSrc = property.image || "/placeholder.jpg";
 
     return (
         <>
             <div className="bg-white shadow rounded overflow-hidden hover:shadow-lg transition">
 
-                <img
-                    src={property.image}
-                    alt={property.title}
-                    className="h-48 w-full object-cover"
-                />
+                {/* 🔥 IMAGE WITH BLUR EFFECT */}
+                <div className="relative h-48 w-full overflow-hidden">
+
+                    {/* Blurred layer */}
+                    <img
+                        src={imageSrc}
+                        alt={property.title}
+                        className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 
+                            ${imgLoaded ? "blur-0 scale-100" : "blur-md scale-110"}`}
+                    />
+
+                    {/* Main image */}
+                    <img
+                        src={imageSrc}
+                        alt={property.title}
+                        onLoad={() => setImgLoaded(true)}
+                        className={`w-full h-full object-cover transition-opacity duration-500 
+                            ${imgLoaded ? "opacity-100" : "opacity-0"}`}
+                    />
+
+                </div>
 
                 <div className="p-4">
 
@@ -89,7 +102,6 @@ function PropertyCard({ property }) {
                 </div>
             </div>
 
-            {/* 🔥 Popup */}
             <LeadCaptureModal
                 isOpen={showModal}
                 onClose={() => setShowModal(false)}

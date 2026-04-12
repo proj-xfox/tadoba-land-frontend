@@ -1,37 +1,52 @@
 // src/components/layout/Navbar.jsx
 
 import { Link, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
 import SearchBar from "../search/SearchBar";
+import { useAuth } from "../../context/AuthContext";
+import { useState } from "react";
+import BecomeSellerModal from "../auth/BecomeSellerModal";
 
 function Navbar({ onSearch }) {
 
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [userRole, setRole] = useState(null);
-
+    const { user, logout } = useAuth();
     const navigate = useNavigate();
-
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        const role = localStorage.getItem("role");
-        setIsLoggedIn(!!token);
-        setRole(role);
-    }, []);
+    const [showSellerModal, setShowSellerModal] = useState(false);
 
     const handleLogout = () => {
-        localStorage.clear();
-        setIsLoggedIn(false);
-        setRole(false);
+        logout();
         navigate("/");
     };
 
+    const handleSellerConfirm = (type) => {
+        setShowSellerModal(false);
+
+        // 👉 for now just continue
+        // later: call API to upgrade role
+
+        navigate("/add-property");
+    };
+
+    const handleListProperty = () => {
+
+        if (!user) {
+            navigate("/login");
+            return;
+        }
+
+        if (user.role === "BUYER") {
+            setShowSellerModal(true);
+            return;
+        }
+
+        navigate("/add-property");
+    };
     return (
         <nav className="fixed top-0 left-0 w-full bg-white shadow-md z-50">
             <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
 
+                {/* Logo */}
                 <div className="flex items-center gap-2">
-                    <span className="tiger">🐅</span>
-
+                    <span>🐅</span>
                     <Link to="/" className="text-2xl font-bold text-green-700">
                         TadobaLand
                     </Link>
@@ -48,23 +63,28 @@ function Navbar({ onSearch }) {
                         Browse Land
                     </Link>
 
-                    <Link to="/add-property" className="text-gray-700 hover:text-green-700">
+                    <button
+                        onClick={handleListProperty}
+                        className="text-gray-700 hover:text-green-700"
+                    >
                         List Your Land
-                    </Link>
+                    </button>
 
-                    {userRole === "AGENT" && (
+                    {/* ROLE BASED */}
+                    {user?.role === "AGENT" && (
                         <Link to="/dashboard" className="text-gray-700 hover:text-green-700">
                             Dashboard
                         </Link>
                     )}
 
-                    {userRole === "ADMIN" && (
+                    {user?.role === "ADMIN" && (
                         <Link to="/admin" className="text-gray-700 hover:text-green-700">
                             Admin Panel
                         </Link>
                     )}
 
-                    {!isLoggedIn ? (
+                    {/* AUTH UI */}
+                    {!user ? (
                         <>
                             <Link
                                 to="/login"
@@ -81,15 +101,28 @@ function Navbar({ onSearch }) {
                             </Link>
                         </>
                     ) : (
-                        <button
-                            onClick={handleLogout}
-                            className="border border-red-500 text-red-500 px-4 py-1 rounded hover:bg-red-500 hover:text-white"
-                        >
-                            Logout
-                        </button>
+                        <div className="flex items-center gap-3">
+                            <span className="text-sm text-gray-700">
+                                Hi, {user.name}
+                            </span>
+
+                            <button
+                                onClick={handleLogout}
+                                className="border border-red-500 text-red-500 px-4 py-1 rounded hover:bg-red-500 hover:text-white"
+                            >
+                                Logout
+                            </button>
+                        </div>
                     )}
+
                 </div>
             </div>
+
+            <BecomeSellerModal
+                isOpen={showSellerModal}
+                onClose={() => setShowSellerModal(false)}
+                onConfirm={handleSellerConfirm}
+            />
         </nav>
     );
 }

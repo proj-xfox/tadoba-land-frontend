@@ -1,12 +1,8 @@
-import { useNavigate, useSearchParams } from "react-router-dom";
+import useFilters from "../../hooks/useFilters";
 
-function SafariGates() {
-    const navigate = useNavigate();
-    const [searchParams] = useSearchParams();
+function SafariGatesNew() {
 
-    const selectedGates = searchParams.get("gates")
-        ? searchParams.get("gates").split(",")
-        : [];
+    const { gates: selectedGates, toggleGate } = useFilters();
 
     const gates = [
         "Moharli",
@@ -22,33 +18,15 @@ function SafariGates() {
         "Madnapur"
     ];
 
-    const handleGateClick = (gate) => {
-        const formatted = gate.toLowerCase();
-
-        let updatedGates;
-
-        if (selectedGates.includes(formatted)) {
-            // ❌ Remove (deselect)
-            updatedGates = selectedGates.filter(g => g !== formatted);
-        } else {
-            // ✅ Add (select)
-            updatedGates = [...selectedGates, formatted];
-        }
-
-        if (updatedGates.length === 0) {
-            navigate("/");
-        } else {
-            navigate(`/?gates=${updatedGates.join(",")}`);
-        }
-    };
-
     return (
         <section className="max-w-7xl mx-auto px-4 pt-10">
+
             <h2 className="text-xl font-semibold text-gray-800 text-center mb-6">
                 Explore Land Near Tadoba Safari Gates
             </h2>
 
             <div className="flex flex-wrap justify-center gap-3">
+
                 {gates.map((gate) => {
                     const formatted = gate.toLowerCase();
                     const isActive = selectedGates.includes(formatted);
@@ -56,7 +34,7 @@ function SafariGates() {
                     return (
                         <button
                             key={gate}
-                            onClick={() => handleGateClick(gate)}
+                            onClick={() => toggleGate(gate)}
                             className={`px-4 py-2 rounded-full border transition
                                 ${isActive
                                     ? "bg-green-600 text-white border-green-600 shadow-md"
@@ -67,9 +45,11 @@ function SafariGates() {
                         </button>
                     );
                 })}
+
             </div>
+
         </section>
     );
 }
 
-export default SafariGates;
+export default SafariGatesNew;
