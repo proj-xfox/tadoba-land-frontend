@@ -1,28 +1,54 @@
-import { loginApi } from "../api/authApi";
+// src/pages/Login.jsx
+
+import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { ChevronRight, ChevronLeft } from "lucide-react";
+import { Loader2, LogIn } from "lucide-react";
+import { loginApi } from "../api/authApi";
+import { useAuth } from "../context/AuthContext";
 import { getMyAgentProfileApi, saveAgentProfileApi } from "../api/agentApi";
 import AgentProfileModal from "../components/agent/AgentProfileModal";
-import { useAuth } from "../context/AuthContext"; // ✅ NEW
 
 function Login() {
 
-    const [phone, setPhone] = useState("");
-    const [password, setPassword] = useState("");
+    const navigate = useNavigate();
+    const { login } = useAuth();
+
+    const [formData, setFormData] = useState({
+        phone: "",
+        password: ""
+    });
+
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
     const [showProfileModal, setShowProfileModal] = useState(false);
 
-    const navigate = useNavigate();
-    const { login } = useAuth(); // ✅ NEW
+    const handleChange = (e) => {
+        const { name, value } = e.target;
 
-    const handleLogin = async () => {
+        // 🔥 Only allow numbers in phone
+        if (name === "phone") {
+            if (!/^\d*$/.test(value)) return;
+        }
+
+        setFormData(prev => ({ ...prev, [name]: value }));
+
+        if (error) setError("");
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const { phone, password } = formData;
+
+        if (!phone || !password) {
+            return setError("Please enter mobile number and password.");
+        }
+
+        if (phone.length < 10) {
+            return setError("Please enter a valid 10-digit mobile number.");
+        }
+
         try {
-            if (!phone || !password) {
-                alert("Please enter mobile number and password");
-                return;
-            }
-
             setLoading(true);
 
             const res = await loginApi({
@@ -30,31 +56,18 @@ function Login() {
                 password
             });
 
-            // ✅ USE AUTH CONTEXT (IMPORTANT)
             login(res.user, res.token);
 
             if (res.user.role === "AGENT") {
                 await checkAgentProfileAndShowModal();
             } else {
-                navigate("/");
+                navigate("/", { replace: true });
             }
 
         } catch (err) {
-            alert(err.message);
+            setError(err.message || "Invalid mobile number or password.");
         } finally {
             setLoading(false);
-        }
-    };
-
-    const handleSaveProfile = async (form) => {
-        try {
-            await saveAgentProfileApi(form);
-            setShowProfileModal(false);
-            alert("Profile completed! You'll get more enquiries 🚀");
-            navigate("/");
-        } catch (err) {
-            console.error(err);
-            alert("Failed to save profile");
         }
     };
 
@@ -67,158 +80,95 @@ function Login() {
             } else {
                 navigate("/");
             }
-        } catch (err) {
-            console.error("Profile check failed", err);
+        } catch {
             navigate("/");
         }
     };
 
-    const leftSlides = [
-        "Discover Land Opportunities Around Tadoba",
-        "Direct Owner Listings — No Middlemen",
-        "Find Resort & Farm Land Deals"
-    ];
-
-    const rightSlides = [
-        "Sell Your Land Easily",
-        "Reach Genuine Buyers",
-        "List Your Property in Minutes"
-    ];
-
-    const [leftIndex, setLeftIndex] = useState(0);
-    const [rightIndex, setRightIndex] = useState(0);
-    const [open, setOpen] = useState(false);
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setLeftIndex((prev) => (prev + 1) % leftSlides.length);
-            setRightIndex((prev) => (prev + 1) % rightSlides.length);
-        }, 4000);
-
-        return () => clearInterval(interval);
-    }, []);
-
-    const properties = [1, 2, 3, 4];
+    const handleSaveProfile = async (form) => {
+        try {
+            await saveAgentProfileApi(form);
+            setShowProfileModal(false);
+            navigate("/");
+        } catch {
+            alert("Failed to save profile");
+        }
+    };
 
     return (
-        <div className="min-h-screen grid grid-cols-1 md:grid-cols-3 relative">
+        <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-50 p-4">
+            <div className="bg-white w-full max-w-sm p-8 rounded-2xl shadow-xl border">
 
-            {/* LEFT AREA */}
-            <div className="hidden md:flex bg-gray-100 items-center justify-center overflow-hidden">
+                <h2 className="text-2xl font-bold text-center mb-2">
+                    Welcome Back
+                </h2>
 
-                {!open ? (
-                    <div
-                        onClick={() => setOpen(true)}
-                        className="relative bg-green-800 text-white w-full h-full flex items-center justify-center text-center cursor-pointer"
-                    >
-                        <div className="px-10">
-                            <h2 className="text-2xl font-semibold leading-relaxed">
-                                {leftSlides[leftIndex]}
-                            </h2>
-                        </div>
+                <p className="text-center text-sm text-gray-500 mb-6">
+                    Login using your mobile number
+                </p>
 
-                        <div className="absolute right-0 top-1/2 -translate-y-1/2 bg-green-700 p-3 rounded-l-lg">
-                            <ChevronRight size={24} />
-                        </div>
-                    </div>
-                ) : (
-                    <div className="grid grid-cols-1 gap-4 w-full">
-                        {properties.map((p) => (
-                            <div key={p} className="bg-white rounded shadow p-3">
-                                <div className="h-24 bg-gray-300 mb-2 rounded"></div>
-                                <p className="text-sm font-semibold">
-                                    Farm Land Near Moharli
-                                </p>
-                            </div>
-                        ))}
+                {/* ERROR */}
+                {error && (
+                    <div className="mb-4 p-3 text-sm text-red-700 bg-red-100 rounded">
+                        {error}
                     </div>
                 )}
-            </div>
 
-            {/* LOGIN */}
-            <div className="flex items-center justify-center bg-gray-50 px-4">
+                <form onSubmit={handleSubmit} className="space-y-4">
 
-                <div className="bg-white p-6 md:p-8 rounded-lg shadow-md w-full max-w-md">
-
-                    <h2 className="text-xl md:text-2xl font-semibold mb-6 text-center">
-                        Login to TadobaLand
-                    </h2>
-
-                    <div className="space-y-4">
-
-                        <div className="flex border rounded overflow-hidden">
-                            <span className="px-3 flex items-center bg-gray-100 text-sm">
-                                +91
-                            </span>
-
-                            <input
-                                type="tel"
-                                placeholder="Mobile Number"
-                                value={phone}
-                                onChange={(e) => setPhone(e.target.value)}
-                                className="w-full px-3 py-2 outline-none"
-                            />
-                        </div>
+                    {/* PHONE INPUT */}
+                    <div className="flex border rounded-xl overflow-hidden">
+                        <span className="px-3 flex items-center bg-gray-100 text-sm">
+                            +91
+                        </span>
 
                         <input
-                            type="password"
-                            placeholder="Password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="w-full border rounded px-3 py-2"
+                            name="phone"
+                            type="tel"
+                            placeholder="Enter mobile number"
+                            value={formData.phone}
+                            onChange={handleChange}
+                            className="w-full p-3 outline-none"
                         />
-
-                        <button
-                            onClick={handleLogin}
-                            disabled={loading}
-                            className="w-full bg-green-700 text-white py-2 rounded disabled:opacity-50"
-                        >
-                            {loading ? "Logging in..." : "Login"}
-                        </button>
-
                     </div>
 
-                    <p className="text-sm text-center mt-6">
-                        New here?{" "}
-                        <Link to="/signup" className="text-green-700 font-medium">
-                            Create an account
-                        </Link>
-                    </p>
+                    {/* PASSWORD */}
+                    <input
+                        name="password"
+                        type="password"
+                        placeholder="Password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-green-500"
+                    />
 
-                </div>
-
-            </div>
-
-            {/* RIGHT AREA */}
-            <div className="hidden md:flex bg-gray-100 items-center justify-center overflow-hidden">
-
-                {!open ? (
-                    <div
-                        onClick={() => setOpen(true)}
-                        className="relative bg-gray-900 text-white w-full h-full flex items-center justify-center text-center cursor-pointer"
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="w-full flex items-center justify-center gap-2 bg-green-600 text-white py-3 rounded-xl font-semibold hover:bg-green-700 disabled:opacity-50"
                     >
-                        <div className="px-10">
-                            <h2 className="text-2xl font-semibold leading-relaxed">
-                                {rightSlides[rightIndex]}
-                            </h2>
-                        </div>
+                        {loading ? (
+                            <>
+                                <Loader2 className="animate-spin" size={18} />
+                                Logging in...
+                            </>
+                        ) : (
+                            <>
+                                <LogIn size={18} />
+                                Login
+                            </>
+                        )}
+                    </button>
 
-                        <div className="absolute left-0 top-1/2 -translate-y-1/2 bg-gray-800 p-3 rounded-r-lg">
-                            <ChevronLeft size={24} />
-                        </div>
-                    </div>
-                ) : (
-                    <div className="grid grid-cols-1 gap-4 w-full">
-                        {properties.map((p) => (
-                            <div key={p} className="bg-white rounded shadow p-3">
-                                <div className="h-24 bg-gray-300 mb-2 rounded"></div>
-                                <p className="text-sm font-semibold">
-                                    Resort Plot Near Tadoba
-                                </p>
-                            </div>
-                        ))}
-                    </div>
-                )}
+                </form>
+
+                <p className="text-sm text-center mt-6">
+                    Don’t have an account?{" "}
+                    <Link to="/signup" className="text-green-700 font-semibold">
+                        Create Account
+                    </Link>
+                </p>
+
             </div>
 
             {/* AGENT PROFILE MODAL */}
@@ -227,6 +177,7 @@ function Login() {
                 onClose={() => setShowProfileModal(false)}
                 onSave={handleSaveProfile}
             />
+
         </div>
     );
 }

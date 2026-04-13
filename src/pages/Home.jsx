@@ -18,7 +18,7 @@ import LandInsights from "../components/home/LandInsights";
 import SellPropertyCTA from "../components/home/SellPropertyCTA";
 import { useSearchParams } from "react-router-dom";
 
-function Home() {
+function Home({ onLoginClick, onSignupClick }) {
 
     const [searchParams] = useSearchParams();
     const gates = searchParams.get("gates")
@@ -288,7 +288,12 @@ function Home() {
 
     return (
         <>
-            <Navbar onSearch={handleSearch} />
+            <Navbar
+                onSearch={handleSearch}
+                onLoginClick={onLoginClick}
+                onSignupClick={onSignupClick}
+            />
+
             <div className="pt-10">
                 <PropertyCarousel
                     title="Hot Deals Near Tadoba"

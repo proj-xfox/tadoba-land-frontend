@@ -17,16 +17,30 @@ import ScrollToTop from "../components/helper/ScrollToTop";
 import InsightArticle from "../pages/InsightArticle";
 import Insights from "../pages/Insights";
 import Dashboard from "../pages/Dashboard";
+import { useState } from "react";
+import AuthModal from "../components/auth/AuthModal";
 
 function AppRoutes() {
+    const [authMode, setAuthMode] = useState("login");
+    const [showAuthModal, setShowAuthModal] = useState(false);
+
+    const openLogin = () => {
+        setAuthMode("login");
+        setShowAuthModal(true);
+    };
+
+    const openSignup = () => {
+        setAuthMode("signup");
+        setShowAuthModal(true);
+    };
+
     return (
         <BrowserRouter>
             <ScrollToTop />
 
             <Routes>
 
-                <Route path="/" element={<Home />} />
-
+                <Route path="/" element={<Home onLoginClick={openLogin} onSignupClick={openSignup} />} />
                 <Route path="/login" element={<Login />} />
 
                 <Route path="/signup" element={<Signup />} />
@@ -35,12 +49,11 @@ function AppRoutes() {
 
                 <Route path="/my-properties" element={<MyProperties />} />
 
-                <Route path="/property/:id" element={<PropertyDetails />} />
+                <Route path="/property/:id" element={<PropertyDetails onLoginClick={() => setShowAuthModal(true)} />} />
 
-                {/* Agent profile page */}
                 <Route path="/agent/:slug" element={<AgentProfile />} />
 
-                <Route path="/properties/:type" element={<PropertiesList />} />
+                <Route path="/properties/:type" element={<PropertiesList onLoginClick={() => setShowAuthModal(true)} />} />
 
                 <Route path="/about" element={<About />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
@@ -51,7 +64,13 @@ function AppRoutes() {
 
                 <Route path="/dashboard" element={<Dashboard />} />
 
+
             </Routes>
+            <AuthModal
+                isOpen={showAuthModal}
+                onClose={() => setShowAuthModal(false)}
+                defaultMode={authMode}
+            />
         </BrowserRouter>
     );
 }

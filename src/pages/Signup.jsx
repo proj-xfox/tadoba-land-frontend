@@ -1,34 +1,64 @@
-//src/pages/Signup.jsx
+// src/pages/Signup.jsx
+
 import { signupApi } from "../api/authApi";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { Loader2, UserPlus } from "lucide-react";
 
 function Signup() {
 
-    const [name, setName] = useState("");
-    const [phone, setPhone] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [loading, setLoading] = useState(false);
-
-    const [role, setRole] = useState("buyer");
-    const [sellerType, setSellerType] = useState("OWNER"); // 🔥 new
-
     const navigate = useNavigate();
 
-    const handleSignup = async () => {
+    const [formData, setFormData] = useState({
+        name: "",
+        phone: "",
+        email: "",
+        password: "",
+        confirmPassword: ""
+    });
+
+    const [role, setRole] = useState("buyer");
+    const [sellerType, setSellerType] = useState("OWNER");
+
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+
+        // 🔥 Restrict phone to numbers only
+        if (name === "phone") {
+            if (!/^\d*$/.test(value)) return;
+        }
+
+        setFormData(prev => ({ ...prev, [name]: value }));
+
+        if (error) setError("");
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const { name, phone, email, password, confirmPassword } = formData;
+
+        // ✅ Validation
+        if (!name || !phone || !password) {
+            return setError("Name, mobile number and password are required.");
+        }
+
+        if (phone.length < 10) {
+            return setError("Please enter a valid 10-digit mobile number.");
+        }
+
+        if (password.length < 6) {
+            return setError("Password must be at least 6 characters.");
+        }
+
+        if (password !== confirmPassword) {
+            return setError("Passwords do not match.");
+        }
+
         try {
-            if (!name || !phone || !password) {
-                alert("Name, mobile, and password are required");
-                return;
-            }
-
-            if (password !== confirmPassword) {
-                alert("Passwords do not match");
-                return;
-            }
-
             setLoading(true);
 
             const res = await signupApi({
@@ -36,13 +66,12 @@ function Signup() {
                 phone,
                 email,
                 password,
-                role: role === "seller" ? sellerType : "BUYER" // ✅ FIXED
+                role: role === "seller" ? sellerType : "BUYER"
             });
 
-            // Save token
+            // ✅ keep existing behavior
             localStorage.setItem("token", res.token);
 
-            // Redirect
             if (role === "seller") {
                 navigate("/add-property");
             } else {
@@ -50,7 +79,7 @@ function Signup() {
             }
 
         } catch (err) {
-            alert(err.message);
+            setError(err.message || "Signup failed. Please try again.");
         } finally {
             setLoading(false);
         }
@@ -63,8 +92,7 @@ function Signup() {
             <div className="bg-green-800 text-white flex flex-col justify-center p-12">
 
                 <h1 className="text-3xl font-bold mb-6">
-                    List or Find Land
-                    Around Tadoba
+                    List or Find Land Around Tadoba
                 </h1>
 
                 <ul className="space-y-3 text-lg">
@@ -76,35 +104,48 @@ function Signup() {
             </div>
 
             {/* RIGHT SIDE */}
-            <div className="flex items-center justify-center bg-gray-50">
+            <div className="flex items-center justify-center bg-gray-50 p-4">
 
-                <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+                <div className="bg-white w-full max-w-md p-8 rounded-2xl shadow-xl border">
 
-                    <h2 className="text-2xl font-semibold mb-6">
-                        Create your account
+                    <h2 className="text-2xl font-bold mb-2 text-center">
+                        Create Account
                     </h2>
 
-                    {/* BUYER / SELLER SWITCH */}
+                    <p className="text-center text-sm text-gray-500 mb-6">
+                        Get started in seconds
+                    </p>
+
+                    {/* ERROR */}
+                    {error && (
+                        <div className="mb-4 p-3 text-sm text-red-700 bg-red-100 rounded">
+                            {error}
+                        </div>
+                    )}
+
+                    {/* ROLE SWITCH */}
                     <div className="flex border rounded mb-6 overflow-hidden">
 
                         <button
+                            type="button"
                             onClick={() => setRole("buyer")}
                             className={`flex-1 py-2 text-sm font-medium ${role === "buyer"
-                                ? "bg-green-700 text-white"
-                                : "bg-white text-gray-600"
+                                    ? "bg-green-700 text-white"
+                                    : "bg-white text-gray-600"
                                 }`}
                         >
                             Buyer
                         </button>
 
                         <button
+                            type="button"
                             onClick={() => {
                                 setRole("seller");
-                                setSellerType("OWNER"); // default
+                                setSellerType("OWNER");
                             }}
                             className={`flex-1 py-2 text-sm font-medium ${role === "seller"
-                                ? "bg-green-700 text-white"
-                                : "bg-white text-gray-600"
+                                    ? "bg-green-700 text-white"
+                                    : "bg-white text-gray-600"
                                 }`}
                         >
                             Seller
@@ -112,7 +153,7 @@ function Signup() {
 
                     </div>
 
-                    {/* 🔥 OWNER / AGENT SELECTOR */}
+                    {/* OWNER / AGENT */}
                     {role === "seller" && (
                         <div className="mb-6">
 
@@ -121,11 +162,9 @@ function Signup() {
                             </p>
 
                             <div className="flex gap-4">
-
                                 <label className="flex items-center gap-2">
                                     <input
                                         type="radio"
-                                        name="sellerType"
                                         value="OWNER"
                                         checked={sellerType === "OWNER"}
                                         onChange={(e) => setSellerType(e.target.value)}
@@ -136,85 +175,94 @@ function Signup() {
                                 <label className="flex items-center gap-2">
                                     <input
                                         type="radio"
-                                        name="sellerType"
                                         value="AGENT"
                                         checked={sellerType === "AGENT"}
                                         onChange={(e) => setSellerType(e.target.value)}
                                     />
                                     Agent
                                 </label>
-
                             </div>
 
                         </div>
                     )}
 
-                    <div className="space-y-4">
+                    <form onSubmit={handleSubmit} className="space-y-4">
 
                         <input
+                            name="name"
                             type="text"
                             placeholder="Full Name"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            className="w-full border rounded px-3 py-2"
+                            value={formData.name}
+                            onChange={handleChange}
+                            className="w-full p-3 border rounded-xl"
                         />
 
-                        <input
-                            type="tel"
-                            placeholder="Mobile Number"
-                            value={phone}
-                            onChange={(e) => setPhone(e.target.value)}
-                            className="w-full border rounded px-3 py-2"
-                        />
+                        {/* PHONE */}
+                        <div className="flex border rounded-xl overflow-hidden">
+                            <span className="px-3 flex items-center bg-gray-100 text-sm">
+                                +91
+                            </span>
+
+                            <input
+                                name="phone"
+                                type="tel"
+                                placeholder="Mobile Number"
+                                value={formData.phone}
+                                onChange={handleChange}
+                                className="w-full p-3 outline-none"
+                            />
+                        </div>
 
                         <input
+                            name="email"
                             type="email"
                             placeholder="Email (optional)"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            className="w-full border rounded px-3 py-2"
+                            value={formData.email}
+                            onChange={handleChange}
+                            className="w-full p-3 border rounded-xl"
                         />
 
                         <input
+                            name="password"
                             type="password"
                             placeholder="Password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="w-full border rounded px-3 py-2"
+                            value={formData.password}
+                            onChange={handleChange}
+                            className="w-full p-3 border rounded-xl"
                         />
 
                         <input
+                            name="confirmPassword"
                             type="password"
                             placeholder="Confirm Password"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            className="w-full border rounded px-3 py-2"
+                            value={formData.confirmPassword}
+                            onChange={handleChange}
+                            className="w-full p-3 border rounded-xl"
                         />
 
                         <button
-                            onClick={handleSignup}
+                            type="submit"
                             disabled={loading}
-                            className="w-full bg-green-700 text-white py-2 rounded disabled:opacity-50"
+                            className="w-full flex items-center justify-center gap-2 bg-green-600 text-white py-3 rounded-xl font-semibold hover:bg-green-700 disabled:opacity-50"
                         >
-                            {loading ? "Creating..." : "Create Account"}
+                            {loading ? (
+                                <>
+                                    <Loader2 className="animate-spin" size={18} />
+                                    Creating...
+                                </>
+                            ) : (
+                                <>
+                                    <UserPlus size={18} />
+                                    Create Account
+                                </>
+                            )}
                         </button>
 
-                    </div>
-
-                    <div className="mt-6 text-center text-sm text-gray-500">
-                        or
-                    </div>
-
-                    <button className="w-full border py-2 rounded mt-4">
-                        Continue with Google
-                    </button>
+                    </form>
 
                     <p className="text-sm text-center mt-6">
                         Already have an account?{" "}
-                        <Link
-                            to="/login"
-                            className="text-green-700 font-medium"
-                        >
+                        <Link to="/login" className="text-green-700 font-semibold">
                             Login
                         </Link>
                     </p>

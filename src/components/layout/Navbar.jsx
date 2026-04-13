@@ -6,7 +6,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useState } from "react";
 import BecomeSellerModal from "../auth/BecomeSellerModal";
 
-function Navbar({ onSearch }) {
+function Navbar({ onSearch, onLoginClick, onSignupClick }) {
 
     const { user, logout } = useAuth();
     const navigate = useNavigate();
@@ -29,7 +29,7 @@ function Navbar({ onSearch }) {
     const handleListProperty = () => {
 
         if (!user) {
-            navigate("/login");
+            onSignupClick();
             return;
         }
 
@@ -86,19 +86,19 @@ function Navbar({ onSearch }) {
                     {/* AUTH UI */}
                     {!user ? (
                         <>
-                            <Link
-                                to="/login"
+                            <button
+                                onClick={onLoginClick}
                                 className="border border-green-700 text-green-700 px-4 py-1 rounded hover:bg-green-700 hover:text-white"
                             >
                                 Login
-                            </Link>
+                            </button>
 
-                            <Link
-                                to="/signup"
+                            <button
+                                onClick={onSignupClick}
                                 className="bg-green-700 text-white px-4 py-1 rounded hover:bg-green-800"
                             >
-                                Sign Up
-                            </Link>
+                                Get Started
+                            </button>
                         </>
                     ) : (
                         <div className="flex items-center gap-3">

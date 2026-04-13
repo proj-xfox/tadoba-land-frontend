@@ -12,7 +12,7 @@ import {
     getPropertiesApi
 } from "../api/propertyApi";
 
-function PropertyDetails() {
+function PropertyDetails({ onLoginClick }) {
 
     const { id } = useParams();
     const MASKED_PHONE = "+91 XXX-XXX-1234";
@@ -110,7 +110,9 @@ function PropertyDetails() {
 
     return (
         <>
-            <Navbar />
+            <Navbar
+                onLoginClick={onLoginClick}
+            />
 
             <div className="w-full bg-gray-100 mx-auto px-4 md:px-10 lg:px-20 mt-10 py-10">
 

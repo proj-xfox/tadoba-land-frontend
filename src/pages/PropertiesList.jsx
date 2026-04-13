@@ -1,3 +1,4 @@
+//src/pages/PropertiesList.jsx
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -13,7 +14,7 @@ import {
 
 import useFilters from "../hooks/useFilters";
 
-function PropertiesList() {
+function PropertiesList({ onLoginClick }) {
 
     const [properties, setProperties] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -61,7 +62,9 @@ function PropertiesList() {
 
     return (
         <>
-            <Navbar />
+            <Navbar
+                onLoginClick={onLoginClick}
+            />
 
             <SafariGates />
 
