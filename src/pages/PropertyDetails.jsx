@@ -1,4 +1,5 @@
 // src/pages/PropertyDetails.jsx
+
 import { useParams } from "react-router-dom";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
@@ -10,7 +11,6 @@ import {
     getPropertyByIdApi,
     getPropertiesApi
 } from "../api/propertyApi";
-
 
 function PropertyDetails() {
 
@@ -24,6 +24,9 @@ function PropertyDetails() {
     const [contactName, setContactName] = useState("");
     const [loadingPhone, setLoadingPhone] = useState(false);
     const [showAuthModal, setShowAuthModal] = useState(false);
+
+    // ✅ SOLD FLAG
+    const isSold = property?.status === "SOLD";
 
     // Fetch Property Details
     useEffect(() => {
@@ -46,15 +49,14 @@ function PropertyDetails() {
         setContactName("");
     }, [id]);
 
-    //  Fetch Similar Properties
+    // Fetch Similar Properties
     useEffect(() => {
         if (!property) return;
 
         const fetchSimilar = async () => {
             try {
-                console.log("🔍 Fetching similar properties for village===========:", property.village);
                 const res = await getPropertiesApi({
-                    gate: property.village // ⚠️ ensure backend uses city → village mapping
+                    gate: property.village
                 });
 
                 const filtered = res.data
@@ -73,11 +75,13 @@ function PropertyDetails() {
         fetchSimilar();
     }, [property]);
 
-
     const handleShowPhone = async () => {
+
+        // 🔥 Block contact if SOLD (safety)
+        if (isSold) return;
+
         const token = localStorage.getItem("token");
 
-        //  If not logged in → open modal
         if (!token) {
             setShowAuthModal(true);
             return;
@@ -101,10 +105,8 @@ function PropertyDetails() {
         }
     };
 
-    //  Loading / Error States
     if (loading) return <div className="p-10">Loading...</div>;
     if (!property) return <div className="p-10">Property not found</div>;
-
 
     return (
         <>
@@ -112,18 +114,27 @@ function PropertyDetails() {
 
             <div className="w-full bg-gray-100 mx-auto px-4 md:px-10 lg:px-20 mt-10 py-10">
 
-                {/* MAIN GRID */}
                 <div className="grid lg:grid-cols-3 gap-6">
 
                     {/* LEFT PANEL */}
                     <div className="lg:col-span-2">
 
-                        {/* MAIN IMAGE */}
-                        <img
-                            src={property.images?.[0] || "/fallback.jpg"}
-                            className="w-full h-80 md:h-96 object-cover rounded-lg"
-                            alt="property"
-                        />
+                        {/* IMAGE + SOLD BADGE */}
+                        <div className="relative">
+                            <img
+                                src={property.images?.[0] || "/fallback.jpg"}
+                                className={`w-full h-80 md:h-96 object-cover rounded-lg ${isSold ? "grayscale-[30%]" : ""}`}
+                                alt="property"
+                            />
+
+                            {isSold && (
+                                <div className="absolute top-4 right-4">
+                                    <span className="bg-red-600 text-white px-3 py-1 text-sm font-semibold rounded">
+                                        SOLD
+                                    </span>
+                                </div>
+                            )}
+                        </div>
 
                         {/* THUMBNAILS */}
                         <div className="grid grid-cols-3 gap-2 mt-3">
@@ -185,39 +196,23 @@ function PropertyDetails() {
 
                             <div className="grid md:grid-cols-2 gap-6">
 
-                                {/* MAP */}
                                 <div className="h-64 bg-gray-200 rounded flex items-center justify-center">
                                     Map Coming Soon
                                 </div>
 
-                                {/* DISTANCE INFO */}
                                 <div className="space-y-3">
-
                                     <div className="flex justify-between border-b pb-2">
                                         <span className="text-gray-500">Kolara Gate</span>
                                         <span className="font-medium">5 km</span>
                                     </div>
-
                                     <div className="flex justify-between border-b pb-2">
                                         <span className="text-gray-500">Moharli Gate</span>
                                         <span className="font-medium">14 km</span>
                                     </div>
-
                                     <div className="flex justify-between border-b pb-2">
                                         <span className="text-gray-500">Navegaon Gate</span>
                                         <span className="font-medium">18 km</span>
                                     </div>
-
-                                    <div className="flex justify-between border-b pb-2">
-                                        <span className="text-gray-500">Zari Gate</span>
-                                        <span className="font-medium">22 km</span>
-                                    </div>
-
-                                    <div className="flex justify-between border-b pb-2">
-                                        <span className="text-gray-500">Chandrapur City</span>
-                                        <span className="font-medium">35 km</span>
-                                    </div>
-
                                 </div>
                             </div>
                         </div>
@@ -228,11 +223,23 @@ function PropertyDetails() {
                     <div>
                         <div className="sticky top-24 border rounded-lg p-6 shadow-sm bg-white">
 
+                            {/* 🔥 SOLD BANNER */}
+                            {isSold && (
+                                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded">
+                                    <p className="text-red-700 font-semibold text-sm">
+                                        This property is no longer available.
+                                    </p>
+                                    <p className="text-xs text-gray-600 mt-1">
+                                        Explore similar properties below.
+                                    </p>
+                                </div>
+                            )}
+
                             <h1 className="text-xl font-bold text-gray-800">
                                 {property.title}
                             </h1>
 
-                            <p className="text-green-700 text-2xl font-semibold mt-2">
+                            <p className={`text-2xl font-semibold mt-2 ${isSold ? "text-gray-400 line-through" : "text-green-700"}`}>
                                 {property.price}
                             </p>
 
@@ -241,32 +248,45 @@ function PropertyDetails() {
                             </p>
 
                             <p className="text-gray-600">
-                                🐅 {property.distance}
-                            </p>
-
-                            <p className="text-gray-600">
                                 📐 Area: {property.area}
                             </p>
 
                             {/* CONTACT */}
                             <div className="mt-6 border-t pt-4">
-                                <h3 className="font-semibold mb-3">
-                                    Contact Owner
-                                </h3>
-                                <h1 className="font-semibold mb-3">
-                                    Name: {contactName}
-                                </h1>
-                                <button
-                                    onClick={handleShowPhone}
-                                    disabled={loadingPhone}
-                                    className="w-full bg-green-700 text-white py-2 rounded mb-2 hover:bg-green-800"
-                                >
-                                    {loadingPhone ? "Fetching..." : phone}
-                                </button>
 
-                                <button className="w-full border border-green-700 text-green-700 py-2 rounded hover:bg-green-50">
-                                    Send Enquiry
-                                </button>
+                                <h3 className="font-semibold mb-3">
+                                    {isSold ? "Property Closed" : "Contact Owner"}
+                                </h3>
+
+                                {!isSold && (
+                                    <>
+                                        <h1 className="font-semibold mb-3">
+                                            Name: {contactName}
+                                        </h1>
+
+                                        <button
+                                            onClick={handleShowPhone}
+                                            disabled={loadingPhone}
+                                            className="w-full bg-green-700 text-white py-2 rounded mb-2 hover:bg-green-800"
+                                        >
+                                            {loadingPhone ? "Fetching..." : phone}
+                                        </button>
+
+                                        <button className="w-full border border-green-700 text-green-700 py-2 rounded hover:bg-green-50">
+                                            Send Enquiry
+                                        </button>
+                                    </>
+                                )}
+
+                                {isSold && (
+                                    <button
+                                        disabled
+                                        className="w-full bg-gray-200 text-gray-500 py-2 rounded cursor-not-allowed"
+                                    >
+                                        Not Available
+                                    </button>
+                                )}
+
                             </div>
 
                         </div>
@@ -276,7 +296,6 @@ function PropertyDetails() {
 
                 {/* SIMILAR PROPERTIES */}
                 <div className="mt-6 border rounded-lg p-6 shadow-sm bg-white">
-
                     {similarProperties.length === 0 ? (
                         <div className="text-gray-500 text-center py-4">
                             No similar properties found
@@ -287,9 +306,10 @@ function PropertyDetails() {
                             properties={similarProperties}
                         />
                     )}
-
                 </div>
-            </div >
+
+            </div>
+
             <Footer />
 
             <LoginSignupModal
@@ -297,7 +317,7 @@ function PropertyDetails() {
                 onClose={() => setShowAuthModal(false)}
                 onSuccess={() => {
                     setShowAuthModal(false);
-                    handleShowPhone();  // continue flow after login
+                    handleShowPhone();
                 }}
             />
 

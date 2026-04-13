@@ -1,15 +1,30 @@
 import { Link } from "react-router-dom";
 
 function DealCard({ property }) {
-    return (
 
+    const isSold = property.status === "SOLD";
+
+    return (
         <Link
             to={`/property/${property.id}`}
             className="block"
         >
+            <div className={`bg-white border rounded-lg shadow-sm p-3 w-[220px] flex-shrink-0 hover:shadow-md transition relative ${isSold ? "opacity-80" : ""}`}>
 
-            <div className="bg-white border rounded-lg shadow-sm p-3 w-[220px] flex-shrink-0 hover:shadow-md transition">
+                {/* 🔥 STATUS CHIP */}
+                <div className="absolute top-2 right-2">
+                    <span
+                        className={`text-[10px] font-semibold px-2 py-1 rounded 
+                        ${isSold
+                                ? "bg-red-600 text-white"
+                                : "bg-green-100 text-green-700"
+                            }`}
+                    >
+                        {isSold ? "SOLD" : "AVAILABLE"}
+                    </span>
+                </div>
 
+                {/* IMAGE */}
                 <img
                     src={property.image}
                     alt={property.title}
@@ -45,7 +60,6 @@ function DealCard({ property }) {
                 </div>
 
             </div>
-
         </Link>
     );
 }

@@ -6,11 +6,20 @@ import { createLeadApi } from "../../api/leadApi";
 function PropertyCard({ property }) {
 
     const [showModal, setShowModal] = useState(false);
-    const [imgLoaded, setImgLoaded] = useState(false); // ✅ NEW
+    const [imgLoaded, setImgLoaded] = useState(false);
 
     const navigate = useNavigate();
 
+    const isSold = property.status === "SOLD";
+
     const handleViewDetails = async () => {
+
+        // 🔥 If SOLD → skip lead capture logic (important decision)
+        if (isSold) {
+            navigate(`/property/${property.id}`);
+            return;
+        }
+
         const token = localStorage.getItem("token");
         const leadUserData = localStorage.getItem("leadUser");
 
@@ -39,22 +48,30 @@ function PropertyCard({ property }) {
         setShowModal(true);
     };
 
-    // ✅ Safe image fallback
     const imageSrc = property.image || "/placeholder.jpg";
 
     return (
         <>
-            <div className="bg-white shadow rounded overflow-hidden hover:shadow-lg transition">
+            <div className={`bg-white shadow rounded overflow-hidden hover:shadow-lg transition ${isSold ? "opacity-80" : ""}`}>
 
-                {/* 🔥 IMAGE WITH BLUR EFFECT */}
+                {/* 🔥 IMAGE */}
                 <div className="relative h-48 w-full overflow-hidden">
+
+                    {/* 🔥 STATUS CHIP */}
+                    <div className="absolute top-2 right-2 z-10">
+                        <span className={`text-xs font-semibold px-2 py-1 rounded 
+                            ${isSold ? "bg-red-600 text-white" : "bg-green-100 text-green-700"}`}>
+                            {isSold ? "SOLD" : "AVAILABLE"}
+                        </span>
+                    </div>
 
                     {/* Blurred layer */}
                     <img
                         src={imageSrc}
                         alt={property.title}
                         className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 
-                            ${imgLoaded ? "blur-0 scale-100" : "blur-md scale-110"}`}
+                            ${imgLoaded ? "blur-0 scale-100" : "blur-md scale-110"} 
+                            ${isSold ? "grayscale-[30%]" : ""}`}
                     />
 
                     {/* Main image */}
@@ -88,29 +105,38 @@ function PropertyCard({ property }) {
                         </span>
                     </div>
 
-                    <p className="text-green-700 font-bold mt-2">
+                    {/* 🔥 PRICE */}
+                    <p className={`font-bold mt-2 ${isSold ? "text-gray-400 line-through" : "text-green-700"}`}>
                         {property.price}
                     </p>
 
+                    {/* 🔥 CTA */}
                     <button
                         onClick={handleViewDetails}
-                        className="block w-full mt-3 text-center text-green-700 font-medium border border-green-200 py-2 rounded-lg hover:bg-green-50 transition"
+                        className={`block w-full mt-3 text-center font-medium border py-2 rounded-lg transition
+                            ${isSold
+                                ? "text-gray-600 border-gray-200 hover:bg-gray-50"
+                                : "text-green-700 border-green-200 hover:bg-green-50"
+                            }`}
                     >
-                        View Details
+                        {isSold ? "View Details" : "View Details"}
                     </button>
 
                 </div>
             </div>
 
-            <LeadCaptureModal
-                isOpen={showModal}
-                onClose={() => setShowModal(false)}
-                propertyId={property.id}
-                onSuccess={() => {
-                    setShowModal(false);
-                    navigate(`/property/${property.id}`);
-                }}
-            />
+            {/* 🔥 Modal only for ACTIVE */}
+            {!isSold && (
+                <LeadCaptureModal
+                    isOpen={showModal}
+                    onClose={() => setShowModal(false)}
+                    propertyId={property.id}
+                    onSuccess={() => {
+                        setShowModal(false);
+                        navigate(`/property/${property.id}`);
+                    }}
+                />
+            )}
         </>
     );
 }
