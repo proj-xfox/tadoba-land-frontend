@@ -19,11 +19,10 @@ async function request(
     { method = "GET", headers = {}, body, params } = {}
 ) {
     const token = getToken();
-
     const isFormData = body instanceof FormData;
 
     // -----------------------------------------
-    // Build URL with query params (🔥 FIX)
+    // Build URL
     // -----------------------------------------
     let url = `${API_BASE_URL}${endpoint}`;
 
@@ -45,39 +44,68 @@ async function request(
             : {}),
     };
 
-    // ❌ ONLY set JSON header if NOT FormData
     if (!isFormData) {
         config.headers["Content-Type"] = "application/json";
     }
 
     console.log(`➡ ${method} ${url}`, body || "");
 
-    let payload = {};
     let res;
+    let payload;
 
     try {
         res = await fetch(url, config);
-        const text = await res.text();
-        payload = text ? JSON.parse(text) : {};
 
-        if (res.status === 401) {
+        // ✅ Safe JSON parsing
+        try {
+            payload = await res.json();
+        } catch (jsonErr) {
+            const text = await res.text();
+
+            console.error("❌ NON-JSON RESPONSE RECEIVED");
+            console.error("👉 URL:", url);
+            console.error("👉 STATUS:", res.status);
+            console.error("👉 RAW RESPONSE:", text);
+
+            throw {
+                success: false,
+                code: "NON_JSON_RESPONSE",
+                message: "Server returned invalid response",
+            };
+        }
+
+        // -----------------------------------------
+        // Handle auth expiry
+        // -----------------------------------------
+        if (res.status === 401 && payload?.code === "UNAUTHORIZED") {
+            // 🔐 Only for token/session expiry
             localStorage.clear();
             alert("Session expired. Please login again.");
-            window.location.href = "/login";
+            window.location.href = "/";
             return;
         }
+
     } catch (err) {
         console.error("Fetch error:", err);
-        console.error("❌ NON-JSON RESPONSE RECEIVED");
-        console.error("👉 URL:", url);
-        console.error("👉 STATUS:", res?.status);
-        console.error("👉 RAW RESPONSE:", payload);
-        throw new Error("Network error");
+
+        // 🔥 Preserve backend error if exists
+        if (err?.code) {
+            throw err;
+        }
+
+        throw {
+            success: false,
+            code: "NETWORK_ERROR",
+            message: "Network error. Please try again.",
+        };
     }
 
+    // -----------------------------------------
+    // Handle non-OK responses
+    // -----------------------------------------
     if (!res.ok) {
-        const message = payload.message || payload.error || "Request failed";
-        throw new Error(message);
+        // 🔥 IMPORTANT: preserve full backend error
+        throw payload;
     }
 
     return payload;

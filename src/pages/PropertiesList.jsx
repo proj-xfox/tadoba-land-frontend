@@ -14,7 +14,7 @@ import {
 
 import useFilters from "../hooks/useFilters";
 
-function PropertiesList({ onLoginClick }) {
+function PropertiesList({ onLoginClick, onSignupClick }) {
 
     const [properties, setProperties] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -64,6 +64,7 @@ function PropertiesList({ onLoginClick }) {
         <>
             <Navbar
                 onLoginClick={onLoginClick}
+                onSignupClick={onSignupClick}
             />
 
             <SafariGates />

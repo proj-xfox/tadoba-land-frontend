@@ -58,16 +58,19 @@ function Navbar({ onSearch, onLoginClick, onSignupClick }) {
                 </div>
 
                 {/* Navigation */}
-                <div className="flex items-center gap-6">
+                <div className="flex items-center gap-4">
                     <Link to="/" className="text-gray-700 hover:text-green-700">
                         Browse Land
                     </Link>
 
                     <button
                         onClick={handleListProperty}
-                        className="text-gray-700 hover:text-green-700"
+                        className="flex items-center gap-1 bg-green-700 text-white px-4 py-1 rounded-md hover:bg-green-800 transition"
                     >
-                        List Your Land
+                        Post Property
+                        <span className="bg-white text-green-500 text-xs font-semibold px-2 py-0.5 rounded">
+                            FREE
+                        </span>
                     </button>
 
                     {/* ROLE BASED */}

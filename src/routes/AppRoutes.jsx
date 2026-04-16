@@ -49,11 +49,11 @@ function AppRoutes() {
 
                 <Route path="/my-properties" element={<MyProperties />} />
 
-                <Route path="/property/:id" element={<PropertyDetails onLoginClick={() => setShowAuthModal(true)} />} />
+                <Route path="/property/:id" element={<PropertyDetails onLoginClick={openLogin} onSignupClick={openSignup} />} />
 
                 <Route path="/agent/:slug" element={<AgentProfile />} />
 
-                <Route path="/properties/:type" element={<PropertiesList onLoginClick={() => setShowAuthModal(true)} />} />
+                <Route path="/properties/:type" element={<PropertiesList onLoginClick={openLogin} onSignupClick={openSignup} />} />
 
                 <Route path="/about" element={<About />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />

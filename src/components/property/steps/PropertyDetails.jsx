@@ -50,10 +50,18 @@ function PropertyDetails({ formData, setFormData }) {
                     className="w-full border rounded px-3 py-2"
                 >
                     <option value="">Select Gate</option>
+
                     <option value="MOHARLI">Moharli</option>
                     <option value="KOLARA">Kolara</option>
                     <option value="NAVEGAON">Navegaon</option>
                     <option value="ZARI">Zari</option>
+                    <option value="JUNONA">Junona</option>
+                    <option value="DEVADA">Devada</option>
+                    <option value="AGARZARI">Agarzari</option>
+                    <option value="PANGDI">Pangdi</option>
+                    <option value="KESLAGHAT">Keslaghat</option>
+                    <option value="ALIZANZA">Alizanza</option>
+                    <option value="MADNAPUR">Madnapur</option>
                 </select>
 
                 <select

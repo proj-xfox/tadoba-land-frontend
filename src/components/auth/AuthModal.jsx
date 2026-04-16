@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Loader2, LogIn, UserPlus } from "lucide-react";
-import { loginApi, signupApi } from "../../api/authApi";
+import { loginApi, signupApi, setPasswordApi } from "../../api/authApi";
 import { useAuth } from "../../context/AuthContext";
 import { getMyAgentProfileApi, saveAgentProfileApi } from "../../api/agentApi";
 import AgentProfileModal from "../agent/AgentProfileModal";
@@ -35,6 +35,28 @@ function AuthModal({ isOpen, onClose, defaultMode = "login" }) {
         confirmPassword: ""
     });
 
+    useEffect(() => {
+        if (isOpen) {
+            // Reset all states when modal opens
+            setFormData({
+                phone: "",
+                password: ""
+            });
+
+            setSignupData({
+                name: "",
+                phone: "",
+                email: "",
+                password: "",
+                confirmPassword: ""
+            });
+
+            setError("");
+            setRole("buyer");
+            setSellerType("OWNER");
+        }
+    }, [isOpen]);
+
     const [role, setRole] = useState("buyer");
     const [sellerType, setSellerType] = useState("OWNER");
 
@@ -63,8 +85,8 @@ function AuthModal({ isOpen, onClose, defaultMode = "login" }) {
             return setError("Enter mobile number and password.");
         }
 
-        if (phone.length < 10) {
-            return setError("Enter valid mobile number.");
+        if (phone.length < 10 || phone.length > 10) {
+            return setError("Enter valid 10 digit mobile number.");
         }
 
         try {
@@ -81,7 +103,51 @@ function AuthModal({ isOpen, onClose, defaultMode = "login" }) {
             }
 
         } catch (err) {
-            setError(err.message || "Invalid credentials.");
+
+            // 🔥 ACCOUNT NOT ACTIVATED (NEW FLOW)
+            if (err.code === "ACCOUNT_NOT_ACTIVATED") {
+                setError("Please set your password to continue.");
+
+                setMode("setPassword");
+
+                setSignupData(prev => ({
+                    ...prev,
+                    phone: formData.phone
+                }));
+
+                return;
+            }
+
+            //CODE-DRIVEN HANDLING
+            if (err.code === "USER_NOT_FOUND") {
+                setError("No account found. Please sign up.");
+
+                // Optional: switch to signup
+                setMode("signup");
+
+                // Prefill phone
+                setSignupData(prev => ({
+                    ...prev,
+                    phone: formData.phone
+                }));
+
+                return;
+            }
+
+
+            if (err.code === "INVALID_PASSWORD") {
+                setError("Incorrect password. Try again.");
+                return;
+            }
+
+            if (err.code === "VALIDATION_ERROR") {
+                setError(err.message);
+                return;
+            }
+
+            // fallback
+            setError(err.message || "Login failed.");
+
         } finally {
             setLoading(false);
         }
@@ -129,6 +195,21 @@ function AuthModal({ isOpen, onClose, defaultMode = "login" }) {
             onClose();
 
         } catch (err) {
+
+            if (err.code === "USER_EXISTS") {
+                setError("Account already exists. Please login.");
+
+                setMode("login");
+
+                // Prefill phone
+                setFormData(prev => ({
+                    ...prev,
+                    phone: signupData.phone
+                }));
+
+                return;
+            }
+
             setError(err.message || "Signup failed.");
         } finally {
             setLoading(false);
@@ -160,6 +241,39 @@ function AuthModal({ isOpen, onClose, defaultMode = "login" }) {
         }
     };
 
+    const handleSetPassword = async (e) => {
+        e.preventDefault();
+
+        const { phone, password, confirmPassword } = signupData;
+
+        if (!password) {
+            return setError("Password required.");
+        }
+
+        if (password !== confirmPassword) {
+            return setError("Passwords do not match.");
+        }
+
+        try {
+            setLoading(true);
+
+            const res = await setPasswordApi({
+                phone,
+                password
+            });
+
+            // 🔥 auto login after setting password
+            login(res.user, res.token);
+
+            onClose();
+
+        } catch (err) {
+            setError(err.message || "Failed to set password.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
 
@@ -181,7 +295,13 @@ function AuthModal({ isOpen, onClose, defaultMode = "login" }) {
                 </button>
 
                 <h2 className="text-xl font-semibold mb-2">
-                    {mode === "login" ? "Login" : "Create Account"}
+                    {
+                        mode === "login"
+                            ? "Login"
+                            : mode === "signup"
+                                ? "Create Account"
+                                : "Set Your Password"
+                    }
                 </h2>
 
                 {/* ERROR */}
@@ -192,6 +312,8 @@ function AuthModal({ isOpen, onClose, defaultMode = "login" }) {
                 )}
 
                 {/* ---------------- LOGIN ---------------- */}
+
+
                 {mode === "login" ? (
                     <form onSubmit={handleLogin} className="space-y-4">
 
@@ -249,9 +371,7 @@ function AuthModal({ isOpen, onClose, defaultMode = "login" }) {
                         </p>
 
                     </form>
-                ) : (
-
-                    // ---------------- SIGNUP ----------------
+                ) : mode === "signup" ? (
                     <form onSubmit={handleSignup} className="space-y-3">
 
                         <input
@@ -371,18 +491,72 @@ function AuthModal({ isOpen, onClose, defaultMode = "login" }) {
                         </p>
 
                     </form>
-                )}
+                ) : (
+                    // 🔥 NEW SET PASSWORD UI
+                    <form onSubmit={handleSetPassword} className="space-y-3">
 
-            </div>
+                        <p className="text-sm text-gray-600">
+                            Set your password to activate your account
+                        </p>
+
+                        <input
+                            name="password"
+                            type="password"
+                            placeholder="New Password"
+                            value={signupData.password}
+                            onChange={handleSignupChange}
+                            className="w-full p-3 border rounded-md"
+                        />
+
+                        <input
+                            name="confirmPassword"
+                            type="password"
+                            placeholder="Confirm Password"
+                            value={signupData.confirmPassword}
+                            onChange={handleSignupChange}
+                            className="w-full p-3 border rounded-md"
+                        />
+
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full flex items-center justify-center gap-2 bg-green-600 text-white py-3 rounded-md font-semibold"
+                        >
+                            {loading ? (
+                                <>
+                                    <Loader2 className="animate-spin" size={18} />
+                                    Setting...
+                                </>
+                            ) : (
+                                "Set Password"
+                            )}
+                        </button>
+
+                        <p className="text-sm text-center">
+                            Already have password?{" "}
+                            <button
+                                type="button"
+                                onClick={() => setMode("login")}
+                                className="text-green-700 font-semibold"
+                            >
+                                Login
+                            </button>
+                        </p>
+
+                    </form >
+                )
+                }
+
+            </div >
 
             {/* AGENT PROFILE MODAL */}
-            <AgentProfileModal
+            < AgentProfileModal
                 isOpen={showProfileModal}
                 onClose={() => setShowProfileModal(false)}
                 onSave={handleSaveProfile}
             />
 
-        </div>
+        </div >
     );
 }
 
