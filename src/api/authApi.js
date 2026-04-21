@@ -12,3 +12,17 @@ export async function loginApi(payload) {
 export async function setPasswordApi(payload) {
     return fetchClient.post("/api/auth/set-password", payload);
 }
+
+//  get logged-in user
+export async function getMeApi() {
+    return fetchClient.get("/api/auth/me");
+}
+
+// update logged-in user
+export async function updateUserApi(payload) {
+    return fetchClient.put("/api/auth/me", payload);
+}
+
+export const upgradeRoleApi = (data) => {
+    return fetchClient.put("/api/auth/upgrade-role", data);
+};

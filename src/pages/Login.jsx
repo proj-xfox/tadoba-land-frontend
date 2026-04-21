@@ -7,6 +7,7 @@ import { loginApi } from "../api/authApi";
 import { useAuth } from "../context/AuthContext";
 import { getMyAgentProfileApi, saveAgentProfileApi } from "../api/agentApi";
 import AgentProfileModal from "../components/agent/AgentProfileModal";
+import toast from "react-hot-toast";
 
 function Login() {
 
@@ -91,7 +92,7 @@ function Login() {
             setShowProfileModal(false);
             navigate("/");
         } catch {
-            alert("Failed to save profile");
+            toast.error("Failed to save profile");
         }
     };
 

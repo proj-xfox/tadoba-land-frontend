@@ -5,6 +5,7 @@ import AddPropertyStepper from "../components/property/AddPropertyStepper";
 import PropertyDetails from "../components/property/steps/PropertyDetails";
 import PriceDetails from "../components/property/steps/PriceDetails";
 import Photos from "../components/property/steps/Photos";
+import toast from "react-hot-toast";
 
 import { createPropertyApi, activatePropertyApi } from "../api/propertyApi";
 import { getMyAgentProfileApi, saveAgentProfileApi } from "../api/agentApi";
@@ -34,14 +35,14 @@ function AddProperty() {
     const validateStep = () => {
         if (step === 1) {
             if (!formData.title || !formData.address || !formData.city) {
-                alert("Fill title, address, city");
+                toast.error("Fill title, address, city");
                 return false;
             }
         }
 
         if (step === 2) {
             if (!formData.contactName || !formData.contactPhone) {
-                alert("Add contact details");
+                toast.error("Add contact details");
                 return false;
             }
         }
@@ -67,11 +68,11 @@ function AddProperty() {
 
                 setPropertyId(id);
 
-                alert("Draft created. Now upload photos.");
+                toast.success("Draft created. Now upload photos.");
 
             } catch (err) {
                 console.error(err);
-                alert("Failed to create property");
+                toast.error("Failed to create property");
                 return;
             } finally {
                 setLoading(false);
@@ -98,16 +99,16 @@ function AddProperty() {
     const handleFinish = async () => {
         try {
             if (!propertyId) {
-                alert("Property not ready");
+                toast.error("Property not ready");
                 return;
             }
 
             await activatePropertyApi(propertyId);
-            alert("Property is now LIVE 🚀");
+            toast.success("Property is now LIVE 🚀");
             checkAgentProfileAndShowModal();
 
         } catch (err) {
-            alert("Failed to activate");
+            toast.error("Failed to activate");
         }
     };
 
@@ -115,11 +116,11 @@ function AddProperty() {
         try {
             await saveAgentProfileApi(form);
             setShowProfileModal(false);
-            alert("Profile completed! You'll get more enquiries 🚀");
+            toast.success("Profile completed! You'll get more enquiries 🚀");
             navigate("/");
         } catch (err) {
             console.error(err);
-            alert("Failed to save profile");
+            toast.error("Failed to save profile");
         }
     };
 

@@ -35,7 +35,7 @@ function SafariGatesNew() {
                         <button
                             key={gate}
                             onClick={() => toggleGate(gate)}
-                            className={`px-4 py-2 rounded-full border transition
+                            className={`px-4 py-1 rounded-full border transition
                                 ${isActive
                                     ? "bg-green-600 text-white border-green-600 shadow-md"
                                     : "bg-green-50 border-green-200 text-green-800 hover:bg-green-100"

@@ -6,6 +6,7 @@ import { loginApi, signupApi, setPasswordApi } from "../../api/authApi";
 import { useAuth } from "../../context/AuthContext";
 import { getMyAgentProfileApi, saveAgentProfileApi } from "../../api/agentApi";
 import AgentProfileModal from "../agent/AgentProfileModal";
+import toast from "react-hot-toast";
 
 function AuthModal({ isOpen, onClose, defaultMode = "login" }) {
 
@@ -237,7 +238,7 @@ function AuthModal({ isOpen, onClose, defaultMode = "login" }) {
             setShowProfileModal(false);
             onClose();
         } catch {
-            alert("Failed to save profile");
+            toast.error("Failed to save profile");
         }
     };
 

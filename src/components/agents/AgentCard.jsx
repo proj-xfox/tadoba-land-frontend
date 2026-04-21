@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import LeadCaptureModal from "../leads/LeadCaptureModal.jsx";
 import { createLeadApi } from "../../api/leadApi";
+import toast from "react-hot-toast";
 
 function AgentCard({ agent }) {
 
@@ -12,45 +13,6 @@ function AgentCard({ agent }) {
     const navigate = useNavigate();
     const [showContact, setShowContact] = useState(false);
 
-    /* const handleShowContact = async () => {
-        const token = localStorage.getItem("token");
-        const leadUserData = localStorage.getItem("leadUser");
-
-        // Case 1: Logged in
-        if (token) {
-            try {
-                await createLeadApi({
-                    agentId: agent.id
-                });
-
-                navigate(`/agent/${agent.slug}`);
-            } catch (err) {
-                console.error(err);
-            }
-            return;
-        }
-
-        // Case 2: Existing guest
-        if (leadUserData) {
-            const user = JSON.parse(leadUserData);
-
-            try {
-                await createLeadApi({
-                    ...user,
-                    agentId: agent.id   // 🔥 CHANGE HERE
-                });
-
-                navigate(`/agent/${agent.slug}`);
-            } catch (err) {
-                alert("Something went wrong");
-            }
-
-            return;
-        }
-
-        // Case 3: New guest
-        setShowModal(true);
-    }; */
 
     const handleShowContact = async () => {
         const token = localStorage.getItem("token");
@@ -82,7 +44,7 @@ function AgentCard({ agent }) {
 
                 setShowContact(true); // ✅ show inline
             } catch (err) {
-                alert("Something went wrong");
+                toast.error("Something went wrong");
             }
 
             return;

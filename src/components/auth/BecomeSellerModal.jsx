@@ -21,7 +21,7 @@ function BecomeSellerModal({ isOpen, onClose, onConfirm }) {
                 </button>
 
                 <h2 className="text-lg font-semibold mb-4">
-                    Start Listing Your Property
+                    Start Listing Your Property as a Seller
                 </h2>
 
                 <p className="text-sm text-gray-600 mb-4">
@@ -33,9 +33,10 @@ function BecomeSellerModal({ isOpen, onClose, onConfirm }) {
 
                     <button
                         onClick={() => setType("OWNER")}
-                        className={`flex-1 border rounded py-2 ${type === "OWNER"
-                                ? "bg-green-700 text-white"
-                                : "bg-white"
+                        className={`flex-1 border rounded-md py-2 transition 
+                            ${type === "OWNER"
+                                ? "bg-green-600 text-white border-green-600"
+                                : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
                             }`}
                     >
                         Owner
@@ -43,9 +44,10 @@ function BecomeSellerModal({ isOpen, onClose, onConfirm }) {
 
                     <button
                         onClick={() => setType("AGENT")}
-                        className={`flex-1 border rounded py-2 ${type === "AGENT"
-                                ? "bg-green-700 text-white"
-                                : "bg-white"
+                        className={`flex-1 border rounded-md py-2 transition 
+                                    ${type === "AGENT"
+                                ? "bg-green-600 text-white border-green-600"
+                                : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
                             }`}
                     >
                         Agent
@@ -55,8 +57,9 @@ function BecomeSellerModal({ isOpen, onClose, onConfirm }) {
 
                 {/* ACTION */}
                 <button
+                    type="button"
                     onClick={() => onConfirm(type)}
-                    className="w-full bg-green-700 text-white py-2 rounded"
+                    className="w-full bg-green-700 text-white py-2 rounded-md hover:bg-green-800 transition"
                 >
                     Continue
                 </button>

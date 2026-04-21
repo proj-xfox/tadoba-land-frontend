@@ -1,4 +1,6 @@
+//src/components/agent/AgentProfileModal.jsx
 import { useState } from "react";
+import { toast } from "react-hot-toast";
 
 function AgentProfileModal({ isOpen, onClose, onSave }) {
 
@@ -23,12 +25,12 @@ function AgentProfileModal({ isOpen, onClose, onSave }) {
 
     const handleSubmit = () => {
         if (!form.areas.length) {
-            alert("Select at least one area");
+            toast.error("Select at least one area");
             return;
         }
 
         if (!form.experience) {
-            alert("Add experience");
+            toast.error("Add experience");
             return;
         }
 

@@ -3,7 +3,7 @@
 import { Link } from "react-router-dom";
 import ctabg from "../../assets/images/cta-bg.png";
 
-function SellPropertyCTA() {
+function SellPropertyCTA({ onListProperty }) {
     return (
         <section className="bg-white py-5 ">
             <div className="max-w-7xl mx-20 px-4">
@@ -40,11 +40,12 @@ function SellPropertyCTA() {
                             ✓ Farm & resort land near Tadoba
                         </p>
 
-                        <Link
-                            to="/post-property"
-                            className="text-3xl font-bold border border-white text-white-500 px-20 py-2 rounded-md text-sm hover:bg-green-500">
+                        <button
+                            onClick={onListProperty}
+                            className="text-3xl font-bold border border-white px-20 py-2 rounded-md text-sm hover:bg-green-500"
+                        >
                             List your land
-                        </Link>
+                        </button>
 
                     </div>
 

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { getLeadsApi } from "../api/leadApi";
 import Navbar from "../components/layout/Navbar";
 
-function Dashboard() {
+function Dashboard({ onListProperty }) {
     const [leads, setLeads] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -33,9 +33,11 @@ function Dashboard() {
 
     return (
         <>
-            <Navbar />
+            <Navbar
+                onListProperty={onListProperty}
+            />
 
-            <div className="min-h-screen bg-gray-50 pt-20 px-3 sm:px-4">
+            <div className="max-w-6xl mx-auto px-4 pt-28 pb-16">
                 <div className="max-w-6xl mx-auto">
 
                     {/* HEADER */}
@@ -96,8 +98,8 @@ function Dashboard() {
                                     <div
                                         key={lead.id}
                                         className={`p-3 sm:p-4 hover:bg-gray-50 border-l-4 ${!lead.isViewed
-                                                ? "bg-green-50 border-green-500"
-                                                : "border-transparent"
+                                            ? "bg-green-50 border-green-500"
+                                            : "border-transparent"
                                             }`}
                                     >
 

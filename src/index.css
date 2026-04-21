@@ -15,10 +15,7 @@ body {
     font-family: 'Damion', cursive;
 }
 
-/* Hide scrollbars */
-::-webkit-scrollbar {
-    display: none;
-}
+
 
 /* Walking tiger animation */
 .tiger {

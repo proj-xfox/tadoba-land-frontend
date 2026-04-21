@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { loginApi, signupApi } from "../../api/authApi";
 import { useAuth } from "../../context/AuthContext"; // ✅ NEW
+import toast from "react-hot-toast";
 
 function LoginSignupModal({ isOpen, onClose, onSuccess }) {
 
@@ -20,12 +21,12 @@ function LoginSignupModal({ isOpen, onClose, onSuccess }) {
         try {
             // ✅ validation
             if (!phone || !password || (mode === "signup" && !name)) {
-                alert("Please fill all required fields");
+                toast.error("Please fill all required fields");
                 return;
             }
 
             if (mode === "signup" && password !== confirmPassword) {
-                alert("Passwords do not match");
+                toast.error("Passwords do not match");
                 return;
             }
 
@@ -54,7 +55,7 @@ function LoginSignupModal({ isOpen, onClose, onSuccess }) {
             onClose();   // optional but better UX
 
         } catch (err) {
-            alert(err.message);
+            toast.error(err.message);
         } finally {
             setLoading(false);
         }

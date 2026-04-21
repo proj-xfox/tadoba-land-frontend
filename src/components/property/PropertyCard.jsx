@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LeadCaptureModal from "../leads/LeadCaptureModal.jsx";
 import { createLeadApi } from "../../api/leadApi";
+import toast from "react-hot-toast";
 
 function PropertyCard({ property }) {
 
@@ -39,7 +40,7 @@ function PropertyCard({ property }) {
 
                 navigate(`/property/${property.id}`);
             } catch (err) {
-                alert("Something went wrong");
+                toast.error("Something went wrong");
             }
 
             return;

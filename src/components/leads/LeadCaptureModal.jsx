@@ -1,6 +1,7 @@
 //src/components/leads/LeadCaptureModal.jsx
 import { useState } from "react";
 import { createLeadApi } from "../../api/leadApi";
+import toast from "react-hot-toast";
 
 function LeadCaptureModal({ isOpen, onClose, propertyId, agentId, onSuccess }) {
 
@@ -14,7 +15,7 @@ function LeadCaptureModal({ isOpen, onClose, propertyId, agentId, onSuccess }) {
     const handleSubmit = async () => {
         try {
             if (!name || !phone) {
-                alert("Name and phone required");
+                toast.error("Name and phone required");
                 return;
             }
 
@@ -37,7 +38,7 @@ function LeadCaptureModal({ isOpen, onClose, propertyId, agentId, onSuccess }) {
             onSuccess(); // show contact details
 
         } catch (err) {
-            alert(err.message);
+            toast.error(err.message);
         } finally {
             setLoading(false);
         }
