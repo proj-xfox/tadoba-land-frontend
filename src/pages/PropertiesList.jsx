@@ -126,7 +126,8 @@ function PropertiesList({ onLoginClick, onSignupClick, onListProperty }) {
                     {/* RIGHT SIDEBAR */}
                     <div className="hidden lg:block space-y-6">
 
-                        <div className="border rounded-lg p-6 bg-yellow-50 text-center">
+                        <div className="border rounded-lg p-6 bg-yellow-50 text-center flex flex-col items-center">
+
                             <h3 className="font-semibold text-lg mb-2">
                                 Sell / Lease Your Land
                             </h3>
@@ -135,8 +136,12 @@ function PropertiesList({ onLoginClick, onSignupClick, onListProperty }) {
                                 Reach investors looking for land near Tadoba
                             </p>
 
-                            <button className="bg-yellow-500 text-black font-bold px-4 py-2 rounded">
-                                Post Property
+                            <button className="flex items-center gap-2 bg-yellow-500 text-black font-bold px-4 py-2 rounded">
+                                <span>Post Property</span>
+
+                                <span className="bg-white text-green-600 text-xs font-semibold px-2 py-0.5 rounded-md">
+                                    FREE
+                                </span>
                             </button>
                         </div>
 

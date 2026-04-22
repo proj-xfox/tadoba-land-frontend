@@ -4,6 +4,13 @@ import { Heart, Share2 } from "lucide-react";
 function PropertyCardList({ property }) {
     console.log("🔥 PropertyCardList property===========:", property);
 
+    const handleShare = () => {
+        const OG_BASE = import.meta.env.VITE_API_BASE_URL;
+        const url = `${OG_BASE}/og/property/${property.id}`;
+        const text = `Check this land on TadobaLand 👇\n${url}`;
+        window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);
+    };
+
     return (
         <div className="border border-gray-300 rounded-lg overflow-hidden bg-white hover:shadow-lg transition-all duration-300">
             <div className="grid grid-cols-1 md:grid-cols-12">
@@ -19,7 +26,11 @@ function PropertyCardList({ property }) {
                             <Heart size={18} className="text-gray-700" />
                         </button>
 
-                        <button className="bg-white p-1.5 rounded-full shadow hover:bg-gray-100">
+                        <button
+                            onClick={handleShare}
+                            title="Share on WhatsApp"
+                            className="bg-white p-1.5 rounded-full shadow hover:bg-gray-100"
+                        >
                             <Share2 size={18} className="text-gray-700" />
                         </button>
 
