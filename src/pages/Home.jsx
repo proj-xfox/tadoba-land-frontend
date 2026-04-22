@@ -120,6 +120,7 @@ function Home({ onLoginClick, onSignupClick, onListProperty }) {
                 onListProperty={onListProperty}
             />
 
+            <SafariGates />
             <div className="pt-10">
                 <PropertyCarousel
                     title="Hot Deals Near Tadoba"
@@ -127,7 +128,7 @@ function Home({ onLoginClick, onSignupClick, onListProperty }) {
                 />
             </div>
 
-            <SafariGates />
+
             <div className="max-w-7xl mx-auto px-4  pb-6">
                 {/* Discovery Sections */}
 

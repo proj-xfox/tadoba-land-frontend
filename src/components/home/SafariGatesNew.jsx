@@ -1,7 +1,6 @@
 import useFilters from "../../hooks/useFilters";
 
 function SafariGatesNew() {
-
     const { gates: selectedGates, toggleGate } = useFilters();
 
     const gates = [
@@ -15,40 +14,44 @@ function SafariGatesNew() {
         "Pangdi",
         "Keslaghat",
         "Alizanza",
-        "Madnapur"
+        "Madnapur",
     ];
 
     return (
-        <section className="max-w-7xl mx-auto px-4 pt-10">
+        <div className="sticky top-[60px] md:top-16 z-40 bg-white/80 backdrop-blur-md border-b border-gray-100">
+            <div className="max-w-7xl mx-auto px-2 py-3">
 
-            <h2 className="text-xl font-semibold text-gray-800 text-center mb-6">
-                Explore Land Near Tadoba Safari Gates
-            </h2>
+                {/* Horizontal scroll container */}
+                <div className=" flex gap-1  overflow-x-auto no-scrollbar   ">
 
-            <div className="flex flex-wrap justify-center gap-3">
+                    {gates.map((gate) => {
+                        const formatted = gate.toLowerCase();
+                        const isActive = selectedGates.includes(formatted);
 
-                {gates.map((gate) => {
-                    const formatted = gate.toLowerCase();
-                    const isActive = selectedGates.includes(formatted);
+                        return (
+                            <button
+                                key={gate}
+                                onClick={() => toggleGate(formatted)}
+                                className={`
+                  whitespace-nowrap
+                  px-4 py-2
+                  text-sm font-medium
+                  rounded-full border transition-all duration-200
 
-                    return (
-                        <button
-                            key={gate}
-                            onClick={() => toggleGate(gate)}
-                            className={`px-4 py-1 rounded-full border transition
-                                ${isActive
-                                    ? "bg-green-600 text-white border-green-600 shadow-md"
-                                    : "bg-green-50 border-green-200 text-green-800 hover:bg-green-100"
-                                }`}
-                        >
-                            {gate} Gate
-                        </button>
-                    );
-                })}
+                  ${isActive
+                                        ? "bg-green-600 text-white border-green-600 shadow-sm"
+                                        : "bg-green-50 border-green-200 text-green-800 hover:bg-green-100"
+                                    }
+                `}
+                            >
+                                {gate}
+                            </button>
+                        );
+                    })}
+                </div>
 
             </div>
-
-        </section>
+        </div>
     );
 }
 
